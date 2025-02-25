@@ -21,7 +21,7 @@ export class SchoolService {
     const user = await this.userModel.findById(createSchoolDto.manager_id);
     if (!user) throw new NotFoundException('Empresa não encontrado');
 
-    if (user.role !== 'ADMIN') throw new Error('Usuário não possui permissão.');
+    if (user.role !== 'TEACHER') throw new Error('Usuário não possui permissão.');
 
     const createdSchool = new this.schoolModel(createSchoolDto);
     return createdSchool.save();
@@ -50,15 +50,11 @@ export class SchoolService {
     await this.schoolModel.findByIdAndDelete({ _id: id });
   }
 
-  async getCompaniesByRole(userPayload: UserPayload): Promise<any> {
+  async getByUserRole(userPayload: UserPayload): Promise<any> {
     const userRole = userPayload.role;
     const userSchool = userPayload?.school_id;
 
-    if (userRole === 'MASTER') {
-      return await this.schoolModel.find().exec();
-    }
-
-    if (userRole === 'ADMIN' || userRole === 'DEFAULT') {
+    if (userRole === 'TEACHER' || userRole === 'STUDENT') {
       return await this.schoolModel.find({ id: userSchool }).exec();
     }
   }

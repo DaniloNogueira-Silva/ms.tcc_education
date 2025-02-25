@@ -29,4 +29,10 @@ export enum ActionTypes {
   GET_ALL_QUESTION = 'get_all_question',
   GET_QUESTION = 'get_question',
 
+  CREATE_USER_MAP_PROGRESS = 'create_user_map_progress',
+  UPDATE_USER_MAP_PROGRESS = 'update_user_map_progress',
+  DELETE_USER_MAP_PROGRESS = 'delete_user_map_progress',
+  GET_ALL_USER_MAP_PROGRESS = 'get_all_user_map_progress',
+  GET_USER_MAP_PROGRESS = 'get_user_map_progress',
+
 }

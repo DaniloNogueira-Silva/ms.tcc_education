@@ -39,7 +39,7 @@ export class SchoolController {
       ActionTypes.CREATE_SCHOOL,
     );
 
-    return this.schoolService.getCompaniesByRole(req.user);
+    return this.schoolService.getByUserRole(req.user);
   }
 
   @Get(':id')

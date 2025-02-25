@@ -34,7 +34,7 @@ export class UserController {
   @Get()
   async findAll(@Req() req) {
     await this.userValidator.validateAccess(req.user, ActionTypes.GET_ALL_USER);
-    return await this.userService.getUsersByRole(req.user);
+    return await this.userService.getByUserRole(req.user);
   }
 
   @UseGuards(JwtAuthGuard)

@@ -40,28 +40,10 @@ export class UserService {
     await this.userModel.findByIdAndDelete(id);
   }
 
-  async getUsersByRole(userPayload: UserPayload): Promise<any> {
+  async getByUserRole(userPayload: UserPayload): Promise<any> {
     const userRole = userPayload.role;
-    const userSchool = userPayload?.school_id;
-    if (userRole === 'MASTER') {
-      return await this.userModel.find().exec();
-    }
 
-    if (userRole === 'ADMIN') {
-      const schoolUsers = await this.schoolUserModel
-        .find({ school_id: userSchool })
-        .exec();
-
-      let users: any[] = [];
-      for (const schoolUser of schoolUsers) {
-        const user = await this.userModel.findById(schoolUser.user_id).exec();
-        users.push(user);
-      }
-
-      return users;
-    }
-
-    if (userRole === 'DEFAULT') {
+    if (userRole === 'STUDENT' || userRole === 'TEACHER') {
       return await this.userModel.findById(userPayload.id).exec();
     }
   }
