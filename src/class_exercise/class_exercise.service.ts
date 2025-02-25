@@ -1,0 +1,51 @@
+import { CreateClassExerciseDto } from './dto/create-class-exercise.dto';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { UpdateClassExerciseDto } from './dto/update-class-exercise.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { ClassExercise } from './class_exercise.schema';
+import { Model } from 'mongoose';
+
+@Injectable()
+export class ClassExerciseService {
+  constructor(
+    @InjectModel(ClassExercise.name)
+    private ClassExerciseModel: Model<ClassExercise>,
+  ) {}
+
+  async create(
+    createClassExerciseDto: CreateClassExerciseDto,
+  ): Promise<ClassExercise> {
+    const createdClassExercise = new this.ClassExerciseModel(
+      createClassExerciseDto,
+    );
+    return createdClassExercise.save();
+  }
+
+  async findAll(): Promise<ClassExercise[]> {
+    return this.ClassExerciseModel.find().exec();
+  }
+
+  async findOne(id: string): Promise<ClassExercise> {
+    const school = await this.ClassExerciseModel.findById(id);
+    if (!school)
+      throw new NotFoundException('Usuário da empresa não encontrado');
+    return school;
+  }
+
+  async update(
+    id: string,
+    updateClassExerciseDto: UpdateClassExerciseDto,
+  ): Promise<ClassExercise | null> {
+    return this.ClassExerciseModel.findOneAndUpdate(
+      { _id: id },
+      updateClassExerciseDto,
+      {
+        new: true,
+      },
+    );
+  }
+
+  async remove(id: string): Promise<void> {
+    await this.ClassExerciseModel.findByIdAndDelete({ _id: id });
+  }
+}
