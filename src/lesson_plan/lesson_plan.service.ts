@@ -46,9 +46,9 @@ export class LessonPlanService {
   }
 
   async getByUserRole(userPayload: UserPayload): Promise<any> {
-    const lessonplanRole = userPayload.role;
+    const userRole = userPayload.role;
 
-    if (lessonplanRole === 'TEACHER') {
+    if (userRole === 'TEACHER') {
       const lessonPlans = await this.lessonplanModel
         .find({ teacher_id: userPayload.id })
         .exec();
@@ -56,7 +56,7 @@ export class LessonPlanService {
       return lessonPlans;
     }
 
-    if (lessonplanRole === 'STUDENT') {
+    if (userRole === 'STUDENT') {
       const userMapProgress = await this.userMapProgressModel.find({
         student_id: userPayload.id,
       });

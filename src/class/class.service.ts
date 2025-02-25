@@ -12,9 +12,6 @@ export class ClassService {
   constructor(
     @InjectModel(Class.name)
     private ClassModel: Model<Class>,
-
-    @InjectModel(UserMapProgress.name)
-    private userMapProgressModel: Model<UserMapProgress>,
   ) {}
 
   async create(createClassDto: CreateClassDto): Promise<Class> {
@@ -46,9 +43,9 @@ export class ClassService {
   }
 
   async getByUserRole(userPayload: UserPayload): Promise<any> {
-    const ClassRole = userPayload.role;
+    const userRole = userPayload.role;
 
-    if (ClassRole === 'TEACHER') {
+    if (userRole === 'TEACHER') {
       const Classes = await this.ClassModel.find({
         teacher_id: userPayload.id,
       }).exec();
@@ -56,21 +53,21 @@ export class ClassService {
       return Classes;
     }
 
-    if (ClassRole === 'STUDENT') {
-      const userMapProgress = await this.userMapProgressModel.find({
-        student_id: userPayload.id,
-      });
+    // if (userRole === 'STUDENT') {
+    //   const userMapProgress = await this.userMapProgressModel.find({
+    //     student_id: userPayload.id,
+    //   });
 
-      const Classes: any[] = [];
-      for (const userMap of userMapProgress) {
-        const Class = await this.ClassModel.findById(
-          userMap.lesson_plan_id,
-        ).exec();
+    //   const Classes: any[] = [];
+    //   for (const userMap of userMapProgress) {
+    //     const Class = await this.ClassModel.findById(
+    //       userMap.lesson_plan_id,
+    //     ).exec();
 
-        Classes.push(Class);
-      }
+    //     Classes.push(Class);
+    //   }
 
-      return Classes;
-    }
+    //   return Classes;
+    // }
   }
 }
