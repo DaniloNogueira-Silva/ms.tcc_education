@@ -55,15 +55,7 @@ export class AuthService {
 
     const token = this.jwtService.sign(payload);
 
-    // Configura os cookies de forma segura
-    const isProduction = process.env.NODE_ENV === 'production';
-
-    res.setHeader('Set-Cookie', [
-      `auth_token=${token}; HttpOnly; ${isProduction ? 'Secure;' : ''} SameSite=Strict; Path=/; Max-Age=86400`,
-      `user_payload=${Buffer.from(JSON.stringify(payload)).toString('base64')}; HttpOnly; ${isProduction ? 'Secure;' : ''} SameSite=Strict; Path=/; Max-Age=86400`,
-    ]);
-
-    return res.json({ message: 'Login bem-sucedido' });
+    return token;
   }
 
   decodeUserPayload(userPayloadEncoded: string): any {
