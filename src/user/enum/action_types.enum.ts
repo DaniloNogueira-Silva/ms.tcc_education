@@ -34,4 +34,10 @@ export enum ActionTypes {
   DELETE_USER_MAP_PROGRESS = 'delete_user_map_progress',
   GET_ALL_USER_MAP_PROGRESS = 'get_all_user_map_progress',
   GET_USER_MAP_PROGRESS = 'get_user_map_progress',
+
+  CREATE_USER_CLASS_PROGRESS = 'create_user_class_progress',
+  UPDATE_USER_CLASS_PROGRESS = 'update_user_class_progress',
+  DELETE_USER_CLASS_PROGRESS = 'delete_user_class_progress',
+  GET_ALL_USER_CLASS_PROGRESS = 'get_all_user_class_progress',
+  GET_USER_CLASS_PROGRESS = 'get_user_class_progress',
 }

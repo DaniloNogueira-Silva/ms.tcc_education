@@ -1,12 +1,11 @@
 import {
-  IsString,
-  IsEnum,
-  IsBoolean,
-  IsOptional,
   IsArray,
+  IsBoolean,
+  IsEnum,
+  IsOptional,
+  IsString,
   ValidateNested,
 } from 'class-validator';
-import { Type } from 'class-transformer';
 
 export enum ExerciseType {
   MULTIPLE_CHOICE = 'multiple_choice',
@@ -46,6 +45,5 @@ export class OptionDto {
 export class CreateTrueFalseExerciseDto extends CreateExerciseDto {
   @IsArray()
   @ValidateNested({ each: true })
-  @Type(() => OptionDto)
   options: OptionDto[];
 }

@@ -1,6 +1,5 @@
-import { ForbiddenException } from '@nestjs/common';
-
 import { ActionTypes } from 'src/user/enum/action_types.enum';
+import { ForbiddenException } from '@nestjs/common';
 import { UserPayload } from 'src/auth/auth.service';
 import { UserRoles } from 'src/user/enum/roles.enum';
 
@@ -37,6 +36,24 @@ export class UserValidator {
       ActionTypes.GET_ALL_EXERCISE,
       ActionTypes.CREATE_EXERCISE,
       ActionTypes.DELETE_EXERCISE,
+
+      ActionTypes.GET_ALL_USER_CLASS_PROGRESS,
+      ActionTypes.GET_USER_CLASS_PROGRESS,
+      ActionTypes.CREATE_USER_CLASS_PROGRESS,
+      ActionTypes.UPDATE_USER_CLASS_PROGRESS,
+      ActionTypes.DELETE_USER_CLASS_PROGRESS,
+
+      ActionTypes.CREATE_USER_MAP_PROGRESS,
+      ActionTypes.UPDATE_USER_MAP_PROGRESS,
+      ActionTypes.GET_ALL_USER_MAP_PROGRESS,
+      ActionTypes.GET_USER_MAP_PROGRESS,
+      ActionTypes.DELETE_USER_MAP_PROGRESS,
+
+      ActionTypes.CREATE_EXERCISE,
+      ActionTypes.UPDATE_EXERCISE,
+      ActionTypes.DELETE_EXERCISE,
+      ActionTypes.GET_ALL_EXERCISE,
+      ActionTypes.GET_EXERCISE,
     ];
 
     const studentPermissions: ActionTypes[] = [
@@ -53,6 +70,19 @@ export class UserValidator {
 
       ActionTypes.GET_ALL_EXERCISE,
       ActionTypes.GET_EXERCISE,
+
+      ActionTypes.GET_ALL_USER_CLASS_PROGRESS,
+      ActionTypes.GET_USER_CLASS_PROGRESS,
+
+      ActionTypes.GET_ALL_USER_MAP_PROGRESS,
+      ActionTypes.GET_USER_MAP_PROGRESS,
+
+      ActionTypes.GET_EXERCISE,
+      ActionTypes.GET_ALL_EXERCISE,
+
+      ActionTypes.UPDATE_USER_CLASS_PROGRESS,
+      ActionTypes.UPDATE_USER_MAP_PROGRESS,
+      ActionTypes.UPDATE_EXERCISE,
     ];
 
     if (
