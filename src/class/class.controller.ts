@@ -16,7 +16,7 @@ import { CreateClassDto } from './dto/create-class.dto';
 import { UpdateClassDto } from './dto/update-class.dto';
 import { ActionTypes } from 'src/user/enum/action_types.enum';
 
-@Controller('lesson-plans')
+@Controller('classes')
 export class ClassController {
   constructor(
     private readonly classService: ClassService,

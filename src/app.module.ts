@@ -9,6 +9,7 @@ import { SchoolModule } from './school/school.module';
 import { SchoolUserModule } from './school_user/school_user.module';
 import { UserMapProgressModule } from './user_map_progress/user_map_progress.module';
 import { UserModule } from './user/user.module';
+import { ExerciseModule } from './exercise/exercise.module';
 
 @Module({
   imports: [
@@ -21,7 +22,8 @@ import { UserModule } from './user/user.module';
     LessonPlanModule,
     UserMapProgressModule,
     ClassModule,
-    ClassExerciseModule
+    ClassExerciseModule,
+    ExerciseModule
   ],
 })
 export class AppModule {}

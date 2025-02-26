@@ -5,26 +5,25 @@ import { UpdateClassDto } from './dto/update-class.dto';
 import { Class } from './class.schema';
 import { CreateClassDto } from './dto/create-class.dto';
 import { UserPayload } from 'src/auth/auth.service';
-import { UserMapProgress } from 'src/user_map_progress/user_map_progress.schema';
 
 @Injectable()
 export class ClassService {
   constructor(
     @InjectModel(Class.name)
-    private ClassModel: Model<Class>,
+    private classModel: Model<Class>,
   ) {}
 
   async create(createClassDto: CreateClassDto): Promise<Class> {
-    const createdClass = new this.ClassModel(createClassDto);
+    const createdClass = new this.classModel(createClassDto);
     return createdClass.save();
   }
 
   async findAll(): Promise<Class[]> {
-    return this.ClassModel.find().exec();
+    return this.classModel.find().exec();
   }
 
   async findOne(id: string): Promise<Class> {
-    const Class = await this.ClassModel.findById(id);
+    const Class = await this.classModel.findById(id);
     if (!Class) throw new NotFoundException('Usuário não encontrado');
     return Class;
   }
@@ -33,24 +32,26 @@ export class ClassService {
     id: string,
     updateClassDto: UpdateClassDto,
   ): Promise<Class | null> {
-    return this.ClassModel.findByIdAndUpdate(id, updateClassDto, {
+    return this.classModel.findByIdAndUpdate(id, updateClassDto, {
       new: true,
     });
   }
 
   async remove(id: string): Promise<void> {
-    await this.ClassModel.findByIdAndDelete(id);
+    await this.classModel.findByIdAndDelete(id);
   }
 
   async getByUserRole(userPayload: UserPayload): Promise<any> {
     const userRole = userPayload.role;
 
     if (userRole === 'TEACHER') {
-      const Classes = await this.ClassModel.find({
-        teacher_id: userPayload.id,
-      }).exec();
+      const classes = await this.classModel
+        .find({
+          teacher_id: userPayload.id,
+        })
+        .exec();
 
-      return Classes;
+      return classes;
     }
 
     // if (userRole === 'STUDENT') {
@@ -58,16 +59,16 @@ export class ClassService {
     //     student_id: userPayload.id,
     //   });
 
-    //   const Classes: any[] = [];
+    //   const classes: any[] = [];
     //   for (const userMap of userMapProgress) {
-    //     const Class = await this.ClassModel.findById(
+    //     const Class = await this.classModel.findById(
     //       userMap.lesson_plan_id,
     //     ).exec();
 
-    //     Classes.push(Class);
+    //     classes.push(Class);
     //   }
 
-    //   return Classes;
+    //   return classes;
     // }
   }
 }

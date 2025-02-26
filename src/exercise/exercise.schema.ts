@@ -2,19 +2,19 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 import { Document } from 'mongoose';
 
-export enum QuestionType {
+export enum ExerciseType {
   MULTIPLE_CHOICE = 'multiple_choice',
   OPEN = 'open',
   TRUE_FALSE = 'true_false',
 }
 
-@Schema({ timestamps: true, discriminatorKey: 'type' })
-export class Question extends Document {
+@Schema({ timestamps: true, discriminatorKey: 'type', collection: 'exercises' })
+export class Exercise extends Document {
   @Prop({ required: true })
-  question: string;
+  statement: string;
 
-  @Prop({ required: true, enum: QuestionType })
-  type: QuestionType;
+  @Prop({ required: true, enum: ExerciseType })
+  type: ExerciseType;
 
   @Prop({ required: true })
   answer: string;
@@ -23,22 +23,22 @@ export class Question extends Document {
   showAnswer: boolean;
 }
 
-export const QuestionSchema = SchemaFactory.createForClass(Question);
+export const ExerciseSchema = SchemaFactory.createForClass(Exercise);
 
 @Schema()
-export class MultipleChoiceQuestion extends Question {
+export class MultipleChoiceExercise extends Exercise {
   @Prop({ type: [String], required: true })
   options: string[];
 }
 
-export const MultipleChoiceQuestionSchema = SchemaFactory.createForClass(
-  MultipleChoiceQuestion,
+export const MultipleChoiceExerciseSchema = SchemaFactory.createForClass(
+  MultipleChoiceExercise,
 );
 
 @Schema()
 export class Option {
   @Prop({ required: true })
-  question: string;
+  statement: string;
 
   @Prop({ required: true })
   answer: boolean;
@@ -47,10 +47,10 @@ export class Option {
 export const OptionSchema = SchemaFactory.createForClass(Option);
 
 @Schema()
-export class TrueFalseQuestion extends Question {
+export class TrueFalseExercise extends Exercise {
   @Prop({ type: [OptionSchema], default: [] })
   options: Option[];
 }
 
-export const TrueFalseQuestionSchema =
-  SchemaFactory.createForClass(TrueFalseQuestion);
+export const TrueFalseExerciseSchema =
+  SchemaFactory.createForClass(TrueFalseExercise);

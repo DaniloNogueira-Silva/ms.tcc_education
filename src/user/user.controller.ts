@@ -23,10 +23,9 @@ export class UserController {
     private readonly userValidator: UserValidator,
   ) {}
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards()
   @Post()
   async create(@Body() createUserDto: CreateUserDto, @Req() req) {
-    await this.userValidator.validateAccess(req.user, ActionTypes.CREATE_USER);
     return await this.userService.create(createUserDto);
   }
 

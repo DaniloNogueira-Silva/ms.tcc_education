@@ -1,4 +1,4 @@
-import { ForbiddenException, UnauthorizedException } from '@nestjs/common';
+import { ForbiddenException } from '@nestjs/common';
 
 import { ActionTypes } from 'src/user/enum/action_types.enum';
 import { UserPayload } from 'src/auth/auth.service';
@@ -22,18 +22,21 @@ export class UserValidator {
 
       ActionTypes.UPDATE_LESSON_PLAN,
       ActionTypes.GET_LESSON_PLAN,
+      ActionTypes.GET_ALL_LESSON_PLAN,
       ActionTypes.CREATE_LESSON_PLAN,
       ActionTypes.DELETE_LESSON_PLAN,
 
       ActionTypes.UPDATE_CLASSES,
       ActionTypes.GET_CLASSES,
+      ActionTypes.GET_ALL_CLASSES,
       ActionTypes.CREATE_CLASSES,
       ActionTypes.DELETE_CLASSES,
 
-      ActionTypes.UPDATE_QUESTION,
-      ActionTypes.GET_QUESTION,
-      ActionTypes.CREATE_QUESTION,
-      ActionTypes.DELETE_QUESTION,
+      ActionTypes.UPDATE_EXERCISE,
+      ActionTypes.GET_EXERCISE,
+      ActionTypes.GET_ALL_EXERCISE,
+      ActionTypes.CREATE_EXERCISE,
+      ActionTypes.DELETE_EXERCISE,
     ];
 
     const studentPermissions: ActionTypes[] = [
@@ -44,23 +47,23 @@ export class UserValidator {
 
       ActionTypes.GET_ALL_LESSON_PLAN,
       ActionTypes.GET_LESSON_PLAN,
-      
+
       ActionTypes.GET_ALL_CLASSES,
       ActionTypes.GET_CLASSES,
 
-      ActionTypes.GET_ALL_QUESTION,
-      ActionTypes.GET_QUESTION,
+      ActionTypes.GET_ALL_EXERCISE,
+      ActionTypes.GET_EXERCISE,
     ];
 
     if (
-      payload.role === UserRoles.TEACHER &&
+      payload.role == UserRoles.TEACHER &&
       teacherPermissions.includes(action)
     ) {
       return;
     }
 
     if (
-      payload.role === UserRoles.STUDENT &&
+      payload.role == UserRoles.STUDENT &&
       studentPermissions.includes(action)
     ) {
       return;
