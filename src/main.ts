@@ -9,7 +9,11 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.enableCors({
-    origin: ['http://localhost:3001', 'https://tcc-frontend-flax.vercel.app'],
+    origin: [
+      'http://localhost:3001',
+      'https://tcc-frontend-flax.vercel.app',
+      'http://localhost:3000'
+    ],
   });
 
   await app.listen(3000);
