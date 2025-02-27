@@ -37,6 +37,12 @@ export class UserController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Get('/statics')
+  async statics(@Req() req) {
+    return await this.userService.getStaticsByUserRole(req.user);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   async findOne(@Param('id') id: string, @Req() req) {
     await this.userValidator.validateAccess(req.user, ActionTypes.GET_USER);

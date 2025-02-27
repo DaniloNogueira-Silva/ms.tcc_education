@@ -6,6 +6,9 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './user.schema';
 import { UserPayload } from 'src/auth/auth.service';
 import { SchoolUser } from 'src/school_user/school_user.schema';
+import { LessonPlan } from 'src/lesson_plan/lesson_plan.schema';
+import { Exercise } from 'src/exercise/exercise.schema';
+import { UserMapProgress } from 'src/user_map_progress/user_map_progress.schema';
 
 @Injectable()
 export class UserService {
@@ -13,8 +16,14 @@ export class UserService {
     @InjectModel(User.name)
     private userModel: Model<User>,
 
-    @InjectModel(SchoolUser.name)
-    private schoolUserModel: Model<SchoolUser>,
+    @InjectModel(LessonPlan.name)
+    private lessonPlanModel: Model<LessonPlan>,
+
+    @InjectModel(Exercise.name)
+    private exerciseModel: Model<Exercise>,
+
+    @InjectModel(UserMapProgress.name)
+    private userMapModel: Model<UserMapProgress>,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
@@ -46,5 +55,35 @@ export class UserService {
     if (userRole === 'STUDENT' || userRole === 'TEACHER') {
       return await this.userModel.findById(userPayload.id).exec();
     }
+  }
+
+  async getStaticsByUserRole(userPayload: UserPayload): Promise<any> {
+
+    const lessonPlans = await this.lessonPlanModel
+      .find({ teacher_id: userPayload.id })
+      .exec();
+
+    console.log(lessonPlans);
+
+    const createdExercises = await this.exerciseModel
+      .find({ teacher_id: userPayload.id })
+      .exec();
+      console.log(createdExercises);
+
+    let users: any[] = [];
+
+    for (const lp of lessonPlans) {
+      const userMapProgress = await this.userMapModel
+        .find({ lesson_plan_id: lp.id })
+        .exec();
+
+      users.push(...userMapProgress);
+    }
+
+    return {
+      maps: lessonPlans.length,
+      exercises: createdExercises.length,
+      students: users.length,
+    };
   }
 }

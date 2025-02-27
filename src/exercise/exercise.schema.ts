@@ -21,6 +21,9 @@ export class Exercise extends Document {
 
   @Prop({ default: false })
   showAnswer: boolean;
+
+  @Prop({ required: false })
+  teacher_id: string;
 }
 
 export const ExerciseSchema = SchemaFactory.createForClass(Exercise);

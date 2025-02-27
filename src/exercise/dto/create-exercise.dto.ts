@@ -23,6 +23,9 @@ export class CreateExerciseDto {
   @IsString()
   answer: string;
 
+  @IsString()
+  teacher_id: string;
+
   @IsBoolean()
   @IsOptional()
   showAnswer?: boolean;
