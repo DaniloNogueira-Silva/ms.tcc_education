@@ -17,8 +17,14 @@ export class LessonPlanService {
     private userMapProgressModel: Model<UserMapProgress>,
   ) {}
 
-  async create(createLessonPlanDto: CreateLessonPlanDto): Promise<LessonPlan> {
-    const createdLessonPlan = new this.lessonplanModel(createLessonPlanDto);
+  async create(
+    createLessonPlanDto: CreateLessonPlanDto,
+    userPayload: UserPayload,
+  ): Promise<LessonPlan> {
+    const createdLessonPlan = new this.lessonplanModel({
+      ...createLessonPlanDto,
+      teacher_id: userPayload.id,
+    });
     return createdLessonPlan.save();
   }
 

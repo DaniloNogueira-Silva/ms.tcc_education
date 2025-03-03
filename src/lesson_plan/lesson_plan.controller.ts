@@ -30,7 +30,7 @@ export class LessonPlanController {
       req.user,
       ActionTypes.CREATE_LESSON_PLAN,
     );
-    return await this.lessonplanService.create(createLessonPlanDto);
+    return await this.lessonplanService.create(createLessonPlanDto, req.user);
   }
 
   @UseGuards(JwtAuthGuard)
