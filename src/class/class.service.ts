@@ -44,8 +44,14 @@ export class ClassService {
   async getByUserRole(userPayload: UserPayload): Promise<any> {
     const userRole = userPayload.role;
 
-    if (userRole === 'STUDENT' || userRole === 'TEACHER') {
-      return await this.classModel.findById(userPayload.id).exec();
+    if (userRole === 'TEACHER') {
+      const classes = await this.classModel
+        .find({
+          teacher_id: userPayload.id,
+        })
+        .exec();
+
+      return classes;
     }
   }
 }

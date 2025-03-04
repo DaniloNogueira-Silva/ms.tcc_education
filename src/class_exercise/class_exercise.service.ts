@@ -4,7 +4,6 @@ import { UpdateClassExerciseDto } from './dto/update-class-exercise.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { ClassExercise } from './class_exercise.schema';
 import { Model } from 'mongoose';
-import { UserPayload } from 'src/auth/auth.service';
 
 @Injectable()
 export class ClassExerciseService {
@@ -48,13 +47,5 @@ export class ClassExerciseService {
 
   async remove(id: string): Promise<void> {
     await this.ClassExerciseModel.findByIdAndDelete({ _id: id });
-  }
-
-  async getByUserRole(userPayload: UserPayload): Promise<any> {
-    const userRole = userPayload.role;
-
-    if (userRole === 'STUDENT' || userRole === 'TEACHER') {
-      return await this.ClassExerciseModel.findById(userPayload.id).exec();
-    }
   }
 }

@@ -39,7 +39,7 @@ export class ClassExerciseController {
       ActionTypes.CREATE_CLASSES,
     );
 
-    return this.classExerciseService.getByUserRole(req.user);
+    return this.classExerciseService.findAll();
   }
 
   @Get(':id')
