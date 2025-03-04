@@ -40,7 +40,7 @@ export class ExerciseController {
       req.user,
       ActionTypes.GET_ALL_EXERCISE,
     );
-    return await this.exerciseService.findAll();
+    return await this.exerciseService.getByUserRole(req.user);
   }
 
   @UseGuards(JwtAuthGuard)

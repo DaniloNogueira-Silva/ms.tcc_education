@@ -105,14 +105,8 @@ export class ExerciseService {
   async getByUserRole(userPayload: UserPayload): Promise<any> {
     const userRole = userPayload.role;
 
-    if (userRole === 'TEACHER') {
-      const exercises = await this.exerciseModel
-        .find({
-          teacher_id: userPayload.id,
-        })
-        .exec();
-
-      return exercises;
+    if (userRole === 'STUDENT' || userRole === 'TEACHER') {
+      return await this.exerciseModel.findById(userPayload.id).exec();
     }
   }
 }

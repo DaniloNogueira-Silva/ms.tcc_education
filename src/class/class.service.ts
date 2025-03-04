@@ -24,7 +24,7 @@ export class ClassService {
 
   async findOne(id: string): Promise<Class> {
     const Class = await this.classModel.findById(id);
-    if (!Class) throw new NotFoundException('Usuário não encontrado');
+    if (!Class) throw new NotFoundException('Aula não encontrado');
     return Class;
   }
 
@@ -44,31 +44,8 @@ export class ClassService {
   async getByUserRole(userPayload: UserPayload): Promise<any> {
     const userRole = userPayload.role;
 
-    if (userRole === 'TEACHER') {
-      const classes = await this.classModel
-        .find({
-          teacher_id: userPayload.id,
-        })
-        .exec();
-
-      return classes;
+    if (userRole === 'STUDENT' || userRole === 'TEACHER') {
+      return await this.classModel.findById(userPayload.id).exec();
     }
-
-    // if (userRole === 'STUDENT') {
-    //   const userMapProgress = await this.userMapProgressModel.find({
-    //     student_id: userPayload.id,
-    //   });
-
-    //   const classes: any[] = [];
-    //   for (const userMap of userMapProgress) {
-    //     const Class = await this.classModel.findById(
-    //       userMap.lesson_plan_id,
-    //     ).exec();
-
-    //     classes.push(Class);
-    //   }
-
-    //   return classes;
-    // }
   }
 }

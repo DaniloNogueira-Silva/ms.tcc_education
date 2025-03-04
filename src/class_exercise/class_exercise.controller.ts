@@ -24,35 +24,50 @@ export class ClassExerciseController {
 
   @Post()
   async create(@Body() dto, @Req() req) {
-    await this.userValidator.validateAccess(req.user, ActionTypes.CREATE_CLASSES);
+    await this.userValidator.validateAccess(
+      req.user,
+      ActionTypes.CREATE_CLASSES,
+    );
 
     return this.classExerciseService.create(dto);
   }
 
   @Get()
   async findAll(@Req() req) {
-    await this.userValidator.validateAccess(req.user, ActionTypes.CREATE_CLASSES);
+    await this.userValidator.validateAccess(
+      req.user,
+      ActionTypes.CREATE_CLASSES,
+    );
 
-    return this.classExerciseService.findAll();
+    return this.classExerciseService.getByUserRole(req.user);
   }
 
   @Get(':id')
   async findOne(@Param('id') id: string, @Req() req) {
-    await this.userValidator.validateAccess(req.user, ActionTypes.CREATE_CLASSES);
+    await this.userValidator.validateAccess(
+      req.user,
+      ActionTypes.CREATE_CLASSES,
+    );
 
     return this.classExerciseService.findOne(id);
   }
 
   @Patch(':id')
   async update(@Param('id') id: string, @Body() dto, @Req() req) {
-    await this.userValidator.validateAccess(req.user, ActionTypes.CREATE_CLASSES);
+    await this.userValidator.validateAccess(
+      req.user,
+      ActionTypes.CREATE_CLASSES,
+    );
 
     return this.classExerciseService.update(id, dto);
   }
 
   @Delete(':id')
   async remove(@Param('id') id: string, @Req() req) {
-    await this.userValidator.validateAccess(req.user, ActionTypes.CREATE_CLASSES);
+    await this.userValidator.validateAccess(
+      req.user,
+      ActionTypes.CREATE_CLASSES,
+    );
 
     return this.classExerciseService.remove(id);
   }

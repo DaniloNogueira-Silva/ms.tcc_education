@@ -34,7 +34,7 @@ export class LessonPlanService {
 
   async findOne(id: string): Promise<LessonPlan> {
     const lessonplan = await this.lessonplanModel.findById(id);
-    if (!lessonplan) throw new NotFoundException('Usuário não encontrado');
+    if (!lessonplan) throw new NotFoundException('Plano de aula não encontrado');
     return lessonplan;
   }
 

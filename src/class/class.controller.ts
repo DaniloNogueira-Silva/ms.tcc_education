@@ -26,7 +26,10 @@ export class ClassController {
   @UseGuards(JwtAuthGuard)
   @Post()
   async create(@Body() createClassDto: CreateClassDto, @Req() req) {
-    await this.userValidator.validateAccess(req.user, ActionTypes.CREATE_CLASSES);
+    await this.userValidator.validateAccess(
+      req.user,
+      ActionTypes.CREATE_CLASSES,
+    );
     return await this.classService.create(createClassDto);
   }
 
@@ -54,14 +57,20 @@ export class ClassController {
     @Body() updateClassDto: UpdateClassDto,
     @Req() req,
   ) {
-    await this.userValidator.validateAccess(req.user, ActionTypes.UPDATE_CLASSES);
+    await this.userValidator.validateAccess(
+      req.user,
+      ActionTypes.UPDATE_CLASSES,
+    );
     return await this.classService.update(id, updateClassDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async remove(@Param('id') id: string, @Req() req) {
-    await this.userValidator.validateAccess(req.user, ActionTypes.DELETE_CLASSES);
+    await this.userValidator.validateAccess(
+      req.user,
+      ActionTypes.DELETE_CLASSES,
+    );
     return await this.classService.remove(id);
   }
 }
