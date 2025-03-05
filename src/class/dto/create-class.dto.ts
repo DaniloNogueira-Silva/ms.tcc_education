@@ -7,9 +7,6 @@ export class CreateClassDto {
   @IsNotEmpty()
   lesson_plan_id: string;
 
-  @IsString()
-  exercise_id: string;
-
   @IsNotEmpty()
   name: string;
 

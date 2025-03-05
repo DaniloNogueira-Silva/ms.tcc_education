@@ -26,10 +26,10 @@ export class ClassExerciseService {
   }
 
   async findOne(id: string): Promise<ClassExercise> {
-    const school = await this.ClassExerciseModel.findById(id);
-    if (!school)
-      throw new NotFoundException('Usuário da empresa não encontrado');
-    return school;
+    const classes = await this.ClassExerciseModel.findById(id);
+    if (!classes)
+      throw new NotFoundException('Exercicio da aula não encontrado');
+    return classes;
   }
 
   async update(

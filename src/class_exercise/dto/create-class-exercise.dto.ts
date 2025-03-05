@@ -1,9 +1,10 @@
 import { IsNotEmpty } from 'class-validator';
+import { ObjectId } from 'mongoose';
 
 export class CreateClassExerciseDto {
   @IsNotEmpty()
-  exercise_id: string;
+  exercise_id: ObjectId;
 
   @IsNotEmpty()
-  class_id: string;
+  class_id: ObjectId;
 }

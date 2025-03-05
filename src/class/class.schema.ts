@@ -10,9 +10,6 @@ export class Class extends Document {
   @Prop({ required: true })
   lesson_plan_id: string;
 
-  @Prop({ required: false })
-  exercise_id: string;
-
   @Prop({ required: true })
   name: string;
 
