@@ -21,7 +21,11 @@ export class UserMapProgressService {
     createUserMapProgressDto: CreateUserMapProgressDto,
   ): Promise<UserMapProgress> {
     const createdUserMapProgress = new this.userMapProgressModel(
-      createUserMapProgressDto,
+      {
+        ...createUserMapProgressDto,
+        score: 0,
+        status: 'EM ANDAMENTO',
+      }
     );
     return createdUserMapProgress.save();
   }

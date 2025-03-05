@@ -3,8 +3,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
 export enum ProgressStatus {
-  INCOMPLETE = 'INCOMPLETO',
-  IN_PROGRESS = 'FAZENDO',
+  INCOMPLETE = 'EM ANDAMENTO',
   COMPLETED = 'CONCLUÍDO',
 }
 

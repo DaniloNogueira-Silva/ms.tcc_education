@@ -6,10 +6,4 @@ export class CreateUserMapProgressDto {
 
   @IsNotEmpty()
   lesson_plan_id: string;
-
-  @IsNotEmpty()
-  score: number;
-
-  @IsNotEmpty()
-  status: string;
 }
