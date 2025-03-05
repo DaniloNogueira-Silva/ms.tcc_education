@@ -74,6 +74,7 @@ export class UserValidator {
       ActionTypes.GET_ALL_USER_CLASS_PROGRESS,
       ActionTypes.GET_USER_CLASS_PROGRESS,
 
+      ActionTypes.CREATE_USER_MAP_PROGRESS,
       ActionTypes.GET_ALL_USER_MAP_PROGRESS,
       ActionTypes.GET_USER_MAP_PROGRESS,
 
