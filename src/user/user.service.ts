@@ -9,6 +9,7 @@ import { SchoolUser } from 'src/school_user/school_user.schema';
 import { LessonPlan } from 'src/lesson_plan/lesson_plan.schema';
 import { Exercise } from 'src/exercise/exercise.schema';
 import { UserMapProgress } from 'src/user_map_progress/user_map_progress.schema';
+import { UserClassProgress } from 'src/user_class_progress/user_class_progress.schema';
 
 @Injectable()
 export class UserService {
@@ -24,6 +25,9 @@ export class UserService {
 
     @InjectModel(UserMapProgress.name)
     private userMapModel: Model<UserMapProgress>,
+
+    @InjectModel(UserClassProgress.name)
+    private userClassProgressModel: Model<UserClassProgress>,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
@@ -58,32 +62,45 @@ export class UserService {
   }
 
   async getStaticsByUserRole(userPayload: UserPayload): Promise<any> {
-
-    const lessonPlans = await this.lessonPlanModel
-      .find({ teacher_id: userPayload.id })
-      .exec();
-
-    console.log(lessonPlans);
-
-    const createdExercises = await this.exerciseModel
-      .find({ teacher_id: userPayload.id })
-      .exec();
-      console.log(createdExercises);
-
+    let lessonPlans;
+    let exercices;
+    let students;
     let users: any[] = [];
 
-    for (const lp of lessonPlans) {
-      const userMapProgress = await this.userMapModel
-        .find({ lesson_plan_id: lp.id })
+    if (userPayload.role === 'STUDENT') {
+      lessonPlans = await this.userMapModel
+        .find({ student_id: userPayload.id })
         .exec();
 
-      users.push(...userMapProgress);
+      students = await this.userModel.find({ id: userPayload.id }).exec();
+
+      exercices = await this.userClassProgressModel
+        .find({ student_id: userPayload.id })
+        .exec();
+    }
+
+    if (userPayload.role === 'TEACHER') {
+      lessonPlans = await this.lessonPlanModel
+        .find({ teacher_id: userPayload.id })
+        .exec();
+
+      exercices = await this.exerciseModel
+        .find({ teacher_id: userPayload.id })
+        .exec();
+
+      for (const lp of lessonPlans) {
+        students = await this.userMapModel
+          .find({ lesson_plan_id: lp.id })
+          .exec();
+
+        users.push(...students);
+      }
     }
 
     return {
       maps: lessonPlans.length,
-      exercises: createdExercises.length,
-      students: users.length,
+      exercises: exercices.length,
+      students: students.length,
     };
   }
 }
