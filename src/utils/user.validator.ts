@@ -61,6 +61,7 @@ export class UserValidator {
       ActionTypes.UPDATE_USER,
       ActionTypes.GET_USER,
       ActionTypes.DELETE_USER,
+      ActionTypes.GET_ALL_USER,
 
       ActionTypes.GET_ALL_LESSON_PLAN,
       ActionTypes.GET_LESSON_PLAN,
