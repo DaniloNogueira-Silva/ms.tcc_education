@@ -65,14 +65,13 @@ export class UserService {
     let lessonPlans;
     let exercices;
     let students;
-    let users: any[] = [];
 
     if (userPayload.role === 'STUDENT') {
       lessonPlans = await this.userMapModel
         .find({ student_id: userPayload.id })
         .exec();
 
-      students = await this.userModel.find({ id: userPayload.id }).exec();
+      students = await this.userModel.find({ _id: userPayload.id }).exec();
 
       exercices = await this.userClassProgressModel
         .find({ student_id: userPayload.id })
@@ -92,8 +91,6 @@ export class UserService {
         students = await this.userMapModel
           .find({ lesson_plan_id: lp.id })
           .exec();
-
-        users.push(...students);
       }
     }
 
