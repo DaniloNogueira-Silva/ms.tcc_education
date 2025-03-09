@@ -52,7 +52,7 @@ export class ExerciseService {
     return createdExercise.save();
   }
 
-  async findAll(): Promise<Exercise[]> {
+  async findAll() {
     const [exercises, multipleChoiceExercises, trueFalseExercises] =
       await Promise.all([
         this.exerciseModel.find().exec(),
@@ -85,34 +85,69 @@ export class ExerciseService {
     id: string,
     updateExerciseDto: UpdateExerciseDto,
   ): Promise<Exercise> {
-    const exercise = await this.exerciseModel.findById(id);
-    if (!exercise) throw new NotFoundException('Exercício não encontrado');
+    const [exercise, multipleChoiceExercise, trueFalseExercise] =
+      await Promise.all([
+        this.exerciseModel.findById(id).exec(),
+        this.multipleChoiceExerciseModel.findById(id).exec(),
+        this.trueFalseExerciseModel.findById(id).exec(),
+      ]);
 
-    if (updateExerciseDto.type && updateExerciseDto.type !== exercise.type) {
+    const foundExercise =
+      exercise || multipleChoiceExercise || trueFalseExercise;
+
+    if (!foundExercise) {
+      throw new NotFoundException('Exercício não encontrado');
+    }
+    console.log(foundExercise);
+    if (
+      updateExerciseDto.type &&
+      updateExerciseDto.type !== foundExercise.type
+    ) {
       throw new BadRequestException(
         'Não é possível alterar o tipo do exercício.',
       );
     }
 
-    Object.assign(exercise, updateExerciseDto);
-    return exercise.save();
+    Object.assign(foundExercise, updateExerciseDto);
+
+    return foundExercise.save();
   }
 
   async remove(id: string): Promise<void> {
-    await this.exerciseModel.findByIdAndDelete(id);
+    const [exercise, multipleChoiceExercise, trueFalseExercise] =
+      await Promise.all([
+        this.exerciseModel.findById(id).exec(),
+        this.multipleChoiceExerciseModel.findById(id).exec(),
+        this.trueFalseExerciseModel.findById(id).exec(),
+      ]);
+
+    if (exercise) {
+      await this.exerciseModel.findByIdAndDelete(id);
+    } else if (multipleChoiceExercise) {
+      await this.multipleChoiceExerciseModel.findByIdAndDelete(id);
+    } else if (trueFalseExercise) {
+      await this.trueFalseExerciseModel.findByIdAndDelete(id);
+    } else {
+      throw new NotFoundException('Exercício não encontrado');
+    }
   }
 
   async getByUserRole(userPayload: UserPayload): Promise<any> {
     const userRole = userPayload.role;
 
     if (userRole === 'TEACHER') {
-      const exercises = await this.exerciseModel
-        .find({
-          teacher_id: userPayload.id,
-        })
-        .exec();
+      const [exercises, multipleChoiceExercises, trueFalseExercises] =
+        await Promise.all([
+          this.exerciseModel.find({ teacher_id: userPayload.id }).exec(),
+          this.multipleChoiceExerciseModel
+            .find({ teacher_id: userPayload.id })
+            .exec(),
+          this.trueFalseExerciseModel
+            .find({ teacher_id: userPayload.id })
+            .exec(),
+        ]);
 
-      return exercises;
+      return [...exercises, ...multipleChoiceExercises, ...trueFalseExercises];
     }
   }
 }
