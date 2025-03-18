@@ -52,6 +52,16 @@ export class ClassExerciseController {
     return this.classExerciseService.findOne(id);
   }
 
+  @Get('exercise/:exercise_id')
+  async findExercise(@Param('exercise_id') exercise_id: string, @Req() req) {
+    await this.userValidator.validateAccess(
+      req.user,
+      ActionTypes.CREATE_CLASSES,
+    );
+
+    return this.classExerciseService.findExercise(exercise_id);
+  }
+
   @Patch(':id')
   async update(@Param('id') id: string, @Body() dto, @Req() req) {
     await this.userValidator.validateAccess(
