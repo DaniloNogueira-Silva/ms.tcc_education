@@ -1,3 +1,4 @@
+import { AppController } from './test.controller';
 import { AuthModule } from './auth/auth.module';
 import { ClassExerciseModule } from './class_exercise/class_exercise.module';
 import { ClassModule } from './class/class.module';
@@ -6,6 +7,7 @@ import { ExerciseModule } from './exercise/exercise.module';
 import { LessonPlanModule } from './lesson_plan/lesson_plan.module';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { RabbitMQProducerService } from './utils/rabbitmq-producer';
 import { SchoolModule } from './school/school.module';
 import { SchoolUserModule } from './school_user/school_user.module';
 import { UserClassProgressModule } from './user_class_progress/user_class_progress.module';
@@ -27,5 +29,7 @@ import { UserModule } from './user/user.module';
     ExerciseModule,
     UserClassProgressModule
   ],
+  controllers: [AppController],
+  providers: [RabbitMQProducerService],
 })
 export class AppModule {}
