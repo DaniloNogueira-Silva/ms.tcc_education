@@ -5,7 +5,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { LoginDto } from './dto/login.dto';
 import { User } from 'src/user/user.schema';
-import { School } from 'src/school/school.schema';
 
 export interface UserPayload {
   access_token: string;
@@ -13,8 +12,6 @@ export interface UserPayload {
   name: string;
   email: string;
   role: string;
-  school_id?: string;
-  permissions: string[];
 }
 
 @Injectable()
@@ -24,9 +21,6 @@ export class AuthService {
 
     @InjectModel(User.name)
     private userModel: Model<User>,
-
-    @InjectModel(School.name)
-    private schoolModel: Model<School>,
   ) {}
 
   async validateUser(email: string, password: string): Promise<any> {
@@ -42,14 +36,11 @@ export class AuthService {
   async login(loginDto: LoginDto): Promise<string> {
     const user = await this.validateUser(loginDto.email, loginDto.password);
 
-    const school = await this.schoolModel.findOne({ manager_id: user._id });
-
     const payload = {
       _id: user._id, // ✅ Mantendo o _id como no payload original do JWT
       name: user.name,
       email: user.email,
       role: user.role,
-      school_id: school ? school._id : null,
     };
 
     return this.jwtService.sign(payload);

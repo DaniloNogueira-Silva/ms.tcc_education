@@ -14,7 +14,6 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UserValidator } from '../utils/user.validator';
-import { ActionTypes } from './enum/action_types.enum';
 
 @Controller('users')
 export class UserController {
@@ -32,7 +31,7 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Get()
   async findAll(@Req() req) {
-    await this.userValidator.validateAccess(req.user, ActionTypes.GET_ALL_USER);
+    await this.userValidator.validateAccess(req.user);
     return await this.userService.getByUserRole(req.user);
   }
 
@@ -45,7 +44,7 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   async findOne(@Param('id') id: string, @Req() req) {
-    await this.userValidator.validateAccess(req.user, ActionTypes.GET_USER);
+    await this.userValidator.validateAccess(req.user);
     return await this.userService.findOne(id);
   }
 
@@ -56,14 +55,14 @@ export class UserController {
     @Body() updateUserDto: UpdateUserDto,
     @Req() req,
   ) {
-    await this.userValidator.validateAccess(req.user, ActionTypes.UPDATE_USER);
+    await this.userValidator.validateAccess(req.user);
     return await this.userService.update(id, updateUserDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async remove(@Param('id') id: string, @Req() req) {
-    await this.userValidator.validateAccess(req.user, ActionTypes.DELETE_USER);
+    await this.userValidator.validateAccess(req.user);
     return await this.userService.remove(id);
   }
 }

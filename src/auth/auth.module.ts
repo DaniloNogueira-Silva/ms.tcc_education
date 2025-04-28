@@ -1,5 +1,4 @@
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { School, SchoolSchema } from 'src/school/school.schema';
 import { User, UserSchema } from '../user/user.schema';
 
 import { AuthController } from './auth.controller';
@@ -24,7 +23,6 @@ import { PassportModule } from '@nestjs/passport';
     }),
     MongooseModule.forFeature([
       { name: User.name, schema: UserSchema },
-      { name: School.name, schema: SchoolSchema },
     ]),
   ],
   controllers: [AuthController],

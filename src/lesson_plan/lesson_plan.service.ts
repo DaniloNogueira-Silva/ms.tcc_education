@@ -5,16 +5,12 @@ import { UpdateLessonPlanDto } from './dto/update-lesson_plan.dto';
 import { LessonPlan } from './lesson_plan.schema';
 import { CreateLessonPlanDto } from './dto/create-lesson_plan.dto';
 import { UserPayload } from 'src/auth/auth.service';
-import { UserMapProgress } from 'src/user_map_progress/user_map_progress.schema';
 
 @Injectable()
 export class LessonPlanService {
   constructor(
     @InjectModel(LessonPlan.name)
     private lessonplanModel: Model<LessonPlan>,
-
-    @InjectModel(UserMapProgress.name)
-    private userMapProgressModel: Model<UserMapProgress>,
   ) {}
 
   async create(
@@ -62,21 +58,19 @@ export class LessonPlanService {
       return lessonPlans;
     }
 
-    if (userRole === 'STUDENT') {
-      const userMapProgress = await this.userMapProgressModel.find({
-        student_id: userPayload.id,
-      });
+  //   if (userRole === 'STUDENT') {
 
-      let lessonplans: any[] = [];
-      for (const userMap of userMapProgress) {
-        const lessonPlan = await this.lessonplanModel
-          .findById(userMap.lesson_plan_id)
-          .exec();
 
-        lessonplans.push(lessonPlan);
-      }
+  //     let lessonplans: any[] = [];
+  //     for (const userMap of userMapProgress) {
+  //       const lessonPlan = await this.lessonplanModel
+  //         .findById(userMap.lesson_plan_id)
+  //         .exec();
 
-      return lessonplans;
-    }
+  //       lessonplans.push(lessonPlan);
+  //     }
+
+  //     return lessonplans;
+  //   }
   }
 }

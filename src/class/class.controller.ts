@@ -14,7 +14,7 @@ import { ClassService } from './class.service';
 import { UserValidator } from 'src/utils/user.validator';
 import { CreateClassDto } from './dto/create-class.dto';
 import { UpdateClassDto } from './dto/update-class.dto';
-import { ActionTypes } from 'src/user/enum/action_types.enum';
+
 
 @Controller('classes')
 export class ClassController {
@@ -26,27 +26,21 @@ export class ClassController {
   @UseGuards(JwtAuthGuard)
   @Post()
   async create(@Body() createClassDto: CreateClassDto, @Req() req) {
-    await this.userValidator.validateAccess(
-      req.user,
-      ActionTypes.CREATE_CLASSES,
-    );
+    await this.userValidator.validateAccess(req.user);
     return await this.classService.create(createClassDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get()
   async findAll(@Req() req) {
-    await this.userValidator.validateAccess(
-      req.user,
-      ActionTypes.GET_ALL_CLASSES,
-    );
+    await this.userValidator.validateAccess(req.user);
     return await this.classService.getByUserRole(req.user);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   async findOne(@Param('id') id: string, @Req() req) {
-    await this.userValidator.validateAccess(req.user, ActionTypes.GET_CLASSES);
+    await this.userValidator.validateAccess(req.user);
     return await this.classService.findOne(id);
   }
 
@@ -57,20 +51,14 @@ export class ClassController {
     @Body() updateClassDto: UpdateClassDto,
     @Req() req,
   ) {
-    await this.userValidator.validateAccess(
-      req.user,
-      ActionTypes.UPDATE_CLASSES,
-    );
+    await this.userValidator.validateAccess(req.user);
     return await this.classService.update(id, updateClassDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async remove(@Param('id') id: string, @Req() req) {
-    await this.userValidator.validateAccess(
-      req.user,
-      ActionTypes.DELETE_CLASSES,
-    );
+    await this.userValidator.validateAccess(req.user);
     return await this.classService.remove(id);
   }
 }

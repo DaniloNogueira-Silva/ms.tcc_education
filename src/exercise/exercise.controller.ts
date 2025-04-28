@@ -14,7 +14,7 @@ import { ExerciseService } from './exercise.service';
 import { UserValidator } from 'src/utils/user.validator';
 import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { UpdateExerciseDto } from './dto/update-exercise.dto';
-import { ActionTypes } from 'src/user/enum/action_types.enum';
+
 
 @Controller('exercises')
 export class ExerciseController {
@@ -26,27 +26,21 @@ export class ExerciseController {
   @UseGuards(JwtAuthGuard)
   @Post()
   async create(@Body() createExerciseDto: CreateExerciseDto, @Req() req) {
-    await this.userValidator.validateAccess(
-      req.user,
-      ActionTypes.CREATE_EXERCISE,
-    );
+    await this.userValidator.validateAccess(req.user);
     return await this.exerciseService.create(createExerciseDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get()
   async findAll(@Req() req) {
-    await this.userValidator.validateAccess(
-      req.user,
-      ActionTypes.GET_ALL_EXERCISE,
-    );
+    await this.userValidator.validateAccess(req.user);
     return await this.exerciseService.getByUserRole(req.user);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   async findOne(@Param('id') id: string, @Req() req) {
-    await this.userValidator.validateAccess(req.user, ActionTypes.GET_EXERCISE);
+    await this.userValidator.validateAccess(req.user);
     return await this.exerciseService.findOne(id);
   }
 
@@ -57,20 +51,14 @@ export class ExerciseController {
     @Body() updateExerciseDto: UpdateExerciseDto,
     @Req() req,
   ) {
-    await this.userValidator.validateAccess(
-      req.user,
-      ActionTypes.UPDATE_EXERCISE,
-    );
+    await this.userValidator.validateAccess(req.user);
     return await this.exerciseService.update(id, updateExerciseDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async remove(@Param('id') id: string, @Req() req) {
-    await this.userValidator.validateAccess(
-      req.user,
-      ActionTypes.DELETE_EXERCISE,
-    );
+    await this.userValidator.validateAccess(req.user);
     return await this.exerciseService.remove(id);
   }
 }

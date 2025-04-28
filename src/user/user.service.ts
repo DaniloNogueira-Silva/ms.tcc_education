@@ -5,10 +5,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './user.schema';
 import { UserPayload } from 'src/auth/auth.service';
-import { SchoolUser } from 'src/school_user/school_user.schema';
 import { LessonPlan } from 'src/lesson_plan/lesson_plan.schema';
 import { Exercise } from 'src/exercise/exercise.schema';
-import { UserMapProgress } from 'src/user_map_progress/user_map_progress.schema';
 import { UserClassProgress } from 'src/user_class_progress/user_class_progress.schema';
 
 @Injectable()
@@ -22,9 +20,6 @@ export class UserService {
 
     @InjectModel(Exercise.name)
     private exerciseModel: Model<Exercise>,
-
-    @InjectModel(UserMapProgress.name)
-    private userMapModel: Model<UserMapProgress>,
 
     @InjectModel(UserClassProgress.name)
     private userClassProgressModel: Model<UserClassProgress>,
@@ -66,33 +61,33 @@ export class UserService {
     let exercices;
     let students;
 
-    if (userPayload.role === 'STUDENT') {
-      lessonPlans = await this.userMapModel
-        .find({ student_id: userPayload.id })
-        .exec();
+    // if (userPayload.role === 'STUDENT') {
+    //   lessonPlans = await this.userMapModel
+    //     .find({ student_id: userPayload.id })
+    //     .exec();
 
-      students = await this.userModel.find({ _id: userPayload.id }).exec();
+    //   students = await this.userModel.find({ _id: userPayload.id }).exec();
 
-      exercices = await this.userClassProgressModel
-        .find({ student_id: userPayload.id })
-        .exec();
-    }
+    //   exercices = await this.userClassProgressModel
+    //     .find({ student_id: userPayload.id })
+    //     .exec();
+    // }
 
-    if (userPayload.role === 'TEACHER') {
-      lessonPlans = await this.lessonPlanModel
-        .find({ teacher_id: userPayload.id })
-        .exec();
+    // if (userPayload.role === 'TEACHER') {
+    //   lessonPlans = await this.lessonPlanModel
+    //     .find({ teacher_id: userPayload.id })
+    //     .exec();
 
-      exercices = await this.exerciseModel
-        .find({ teacher_id: userPayload.id })
-        .exec();
+    //   exercices = await this.exerciseModel
+    //     .find({ teacher_id: userPayload.id })
+    //     .exec();
 
-      for (const lp of lessonPlans) {
-        students = await this.userMapModel
-          .find({ lesson_plan_id: lp.id })
-          .exec();
-      }
-    }
+    //   for (const lp of lessonPlans) {
+    //     students = await this.userMapModel
+    //       .find({ lesson_plan_id: lp.id })
+    //       .exec();
+    //   }
+    // }
 
     return {
       maps: lessonPlans.length,

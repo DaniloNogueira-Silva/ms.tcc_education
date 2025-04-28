@@ -14,7 +14,7 @@ import { UserClassProgressService } from './user_class_progress.service';
 import { UserValidator } from 'src/utils/user.validator';
 import { CreateUserClassProgressDto } from './dto/create-user_class_progress.dto';
 import { UpdateUserClassProgressDto } from './dto/update-user_class_progress.dto';
-import { ActionTypes } from 'src/user/enum/action_types.enum';
+
 
 @Controller('user-map-progresss')
 export class UserClassProgressController {
@@ -29,10 +29,7 @@ export class UserClassProgressController {
     @Body() createUserClassProgressDto: CreateUserClassProgressDto,
     @Req() req,
   ) {
-    await this.userValidator.validateAccess(
-      req.user,
-      ActionTypes.CREATE_USER_CLASS_PROGRESS,
-    );
+    await this.userValidator.validateAccess(req.user);
     return await this.userclassprogressService.create(
       createUserClassProgressDto,
     );
@@ -41,20 +38,14 @@ export class UserClassProgressController {
   @UseGuards(JwtAuthGuard)
   @Get()
   async findAll(@Req() req) {
-    await this.userValidator.validateAccess(
-      req.user,
-      ActionTypes.GET_ALL_USER_CLASS_PROGRESS,
-    );
+    await this.userValidator.validateAccess(req.user);
     return await this.userclassprogressService.getByUserRole(req.user);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   async findOne(@Param('id') id: string, @Req() req) {
-    await this.userValidator.validateAccess(
-      req.user,
-      ActionTypes.GET_USER_CLASS_PROGRESS,
-    );
+    await this.userValidator.validateAccess(req.user);
     return await this.userclassprogressService.findOne(id);
   }
 
@@ -65,10 +56,7 @@ export class UserClassProgressController {
     @Body() updateUserClassProgressDto: UpdateUserClassProgressDto,
     @Req() req,
   ) {
-    await this.userValidator.validateAccess(
-      req.user,
-      ActionTypes.UPDATE_USER_CLASS_PROGRESS,
-    );
+    await this.userValidator.validateAccess(req.user);
     return await this.userclassprogressService.update(
       id,
       updateUserClassProgressDto,
@@ -78,10 +66,7 @@ export class UserClassProgressController {
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async remove(@Param('id') id: string, @Req() req) {
-    await this.userValidator.validateAccess(
-      req.user,
-      ActionTypes.DELETE_USER_CLASS_PROGRESS,
-    );
+    await this.userValidator.validateAccess(req.user);
     return await this.userclassprogressService.remove(id);
   }
 }

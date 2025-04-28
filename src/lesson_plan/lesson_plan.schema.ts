@@ -10,9 +10,6 @@ export class LessonPlan extends Document {
 
     @Prop({ required: true })
     name: string;
-    
-    @Prop({ required: true })
-    theme: string;
 }
 
 export const LessonPlanSchema = SchemaFactory.createForClass(LessonPlan);
