@@ -10,55 +10,61 @@ import {
   Req,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { LessonsService } from './lessons.service';
+import { LessonService } from './lesson.service';
 import { UserValidator } from 'src/utils/user.validator';
-import { CreateLessonsDto } from './dto/create-lessons.dto';
-import { UpdateLessonsDto } from './dto/update-lessons.dto';
+import { CreateLessonDto } from './dto/create-lesson.dto';
+import { UpdateLessonDto } from './dto/update-lesson.dto';
+import { UserPayload } from 'src/auth/auth.service';
 
-
-@Controller('classes')
-export class LessonsController {
+@Controller('lessons')
+export class LessonController {
   constructor(
-    private readonly classService: LessonsService,
+    private readonly lessonService: LessonService,
     private readonly userValidator: UserValidator,
   ) {}
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  async create(@Body() createLessonsDto: CreateLessonsDto, @Req() req) {
+  async create(@Body() createLessonDto: CreateLessonDto, @Req() req) {
     await this.userValidator.validateAccess(req.user);
-    return await this.classService.create(createLessonsDto);
+    return await this.lessonService.create(createLessonDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get()
   async findAll(@Req() req) {
     await this.userValidator.validateAccess(req.user);
-    return await this.classService.getByUserRole(req.user);
+    return await this.lessonService.getByUserRole(req.user);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   async findOne(@Param('id') id: string, @Req() req) {
     await this.userValidator.validateAccess(req.user);
-    return await this.classService.findOne(id);
+    return await this.lessonService.findOne(id);
   }
 
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   async update(
     @Param('id') id: string,
-    @Body() updateLessonsDto: UpdateLessonsDto,
+    @Body() updateLessonDto: UpdateLessonDto,
     @Req() req,
   ) {
     await this.userValidator.validateAccess(req.user);
-    return await this.classService.update(id, updateLessonsDto);
+    return await this.lessonService.update(id, updateLessonDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async remove(@Param('id') id: string, @Req() req) {
     await this.userValidator.validateAccess(req.user);
-    return await this.classService.remove(id);
+    return await this.lessonService.remove(id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':lessonId/mark-completed')
+  async markLessonAsCompleted(@Param('lessonId') lessonId: string, @Req() req) {
+    return this.lessonService.markLessonAsCompleted(req.user, lessonId);
   }
 }

@@ -1,7 +1,7 @@
 import { Exercise, ExerciseSchema } from 'src/exercise/exercise.schema';
 import { LessonPlan, LessonPlanSchema } from 'src/lesson_plan/lesson_plan.schema';
 import { User, UserSchema } from './user.schema';
-import { UserProgress, UserProgressSchema } from 'src/user_progress/user.schema';
+import { UserProgress, UserProgressSchema } from 'src/user_progress/user_progress.schema';
 
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';

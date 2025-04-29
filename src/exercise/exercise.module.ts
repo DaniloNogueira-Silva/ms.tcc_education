@@ -11,6 +11,7 @@ import {
 import { ExerciseService } from './exercise.service';
 import { ExerciseController } from './exercise.controller';
 import { UserValidator } from 'src/utils/user.validator';
+import { UserProgressModule } from 'src/user_progress/user_progress.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { UserValidator } from 'src/utils/user.validator';
       },
       { name: TrueFalseExercise.name, schema: TrueFalseExerciseSchema },
     ]),
+    UserProgressModule,
   ],
   controllers: [ExerciseController],
   providers: [ExerciseService, UserValidator],

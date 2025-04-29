@@ -19,6 +19,8 @@ import {
 } from './dto/create-exercise.dto';
 import { UpdateExerciseDto } from './dto/update-exercise.dto';
 import { UserPayload } from 'src/auth/auth.service';
+import { CreateUserProgressDto } from 'src/user_progress/dto/create-user_progress.dto';
+import { UserProgressService } from 'src/user_progress/user_progress.service';
 
 @Injectable()
 export class ExerciseService {
@@ -29,6 +31,8 @@ export class ExerciseService {
     private multipleChoiceExerciseModel: Model<MultipleChoiceExercise>,
     @InjectModel(TrueFalseExercise.name)
     private trueFalseExerciseModel: Model<TrueFalseExercise>,
+
+    private readonly userProgressService: UserProgressService,
   ) {}
 
   async create(createExerciseDto: CreateExerciseDto): Promise<Exercise> {
@@ -149,5 +153,40 @@ export class ExerciseService {
 
       return [...exercises, ...multipleChoiceExercises, ...trueFalseExercises];
     }
+  }
+
+  async markExerciseAsCompleted(
+    userPayload: UserPayload,
+    id: string,
+  ): Promise<any> {
+    let exercise = await this.exerciseModel.findById(id);
+
+    if (!exercise) {
+      exercise = await this.multipleChoiceExerciseModel.findById(id);
+    }
+
+    if (!exercise) {
+      exercise = await this.trueFalseExerciseModel.findById(id);
+    }
+
+    if (!exercise) {
+      throw new NotFoundException('Exercício não encontrado');
+    }
+
+    if (!exercise) throw new NotFoundException('Exercício não encontrado');
+
+    const createUserProgressDto: CreateUserProgressDto = {
+      user_id: userPayload.id,
+      lesson_plan_id: exercise.lesson_plan_id,
+      external_id: exercise.id,
+      type: 'EXERCISE',
+      points: 100,
+    };
+
+    const userProgress = await this.userProgressService.create(
+      createUserProgressDto,
+    );
+
+    return userProgress;
   }
 }

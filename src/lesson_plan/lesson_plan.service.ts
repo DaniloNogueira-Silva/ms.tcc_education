@@ -5,13 +5,17 @@ import { UpdateLessonPlanDto } from './dto/update-lesson_plan.dto';
 import { LessonPlan } from './lesson_plan.schema';
 import { CreateLessonPlanDto } from './dto/create-lesson_plan.dto';
 import { UserPayload } from 'src/auth/auth.service';
-import { UserProgress } from 'src/user_progress/user.schema';
+import { UserProgress } from 'src/user_progress/user_progress.schema';
+import { UserProgressService } from 'src/user_progress/user_progress.service';
+import { CreateUserProgressDto } from 'src/user_progress/dto/create-user_progress.dto';
 
 @Injectable()
 export class LessonPlanService {
   constructor(
     @InjectModel(LessonPlan.name)
     private lessonplanModel: Model<LessonPlan>,
+
+    private readonly userProgressService: UserProgressService,
 
     @InjectModel(UserProgress.name)
     private userProgressModel: Model<UserProgress>,
@@ -77,13 +81,11 @@ export class LessonPlanService {
   }
 
   async inviteUser(
-    lessonPlanId: string,
-    userId: string,
+    createUserProgressDto: CreateUserProgressDto,
   ): Promise<UserProgress> {
-    const userProgress = new this.userProgressModel({
-      user_id: userId,
-      lesson_plan_id: lessonPlanId,
-    });
-    return userProgress.save();
+    const createdUserProgress = this.userProgressService.create(
+      createUserProgressDto,
+    );
+    return createdUserProgress;
   }
 }

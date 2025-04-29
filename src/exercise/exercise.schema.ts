@@ -23,6 +23,9 @@ export class Exercise extends Document {
   showAnswer: boolean;
 
   @Prop({ required: false })
+  lesson_plan_id: string;
+
+  @Prop({ required: false })
   teacher_id: string;
 
   @Prop({ required: false })

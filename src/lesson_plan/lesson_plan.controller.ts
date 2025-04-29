@@ -14,7 +14,7 @@ import { LessonPlanService } from './lesson_plan.service';
 import { UserValidator } from 'src/utils/user.validator';
 import { CreateLessonPlanDto } from './dto/create-lesson_plan.dto';
 import { UpdateLessonPlanDto } from './dto/update-lesson_plan.dto';
-
+import { CreateUserProgressDto } from 'src/user_progress/dto/create-user_progress.dto';
 
 @Controller('lesson-plans')
 export class LessonPlanController {
@@ -60,5 +60,15 @@ export class LessonPlanController {
   async remove(@Param('id') id: string, @Req() req) {
     await this.userValidator.validateAccess(req.user);
     return await this.lessonplanService.remove(id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('inviteUser')
+  async inviteUser(
+    @Body() createUserProgressDto: CreateUserProgressDto,
+    @Req() req,
+  ) {
+    await this.userValidator.validateAccess(req.user);
+    return await this.lessonplanService.inviteUser(createUserProgressDto);
   }
 }

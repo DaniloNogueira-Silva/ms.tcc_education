@@ -1,0 +1,66 @@
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { UpdateUserProgressDto } from './dto/update-user_progress.dto';
+import { CreateUserProgressDto } from './dto/create-user_progress.dto';
+import { UserPayload } from 'src/auth/auth.service';
+import { UserProgress } from 'src/user_progress/user_progress.schema';
+
+@Injectable()
+export class UserProgressService {
+  constructor(
+    @InjectModel(UserProgress.name)
+    private userProgressModel: Model<UserProgress>,
+  ) {}
+
+  async create(
+    createUserProgressDto: CreateUserProgressDto,
+  ): Promise<UserProgress> {
+    const createdUserProgress = new this.userProgressModel({
+      ...createUserProgressDto,
+    });
+    return createdUserProgress.save();
+  }
+
+  async findAll(): Promise<UserProgress[]> {
+    return this.userProgressModel.find().exec();
+  }
+
+  async findOne(id: string): Promise<UserProgress> {
+    const userProgress = await this.userProgressModel.findById(id);
+    if (!userProgress)
+      throw new NotFoundException('Progress do usuário não encontrado');
+    return userProgress;
+  }
+
+  async update(
+    id: string,
+    updateUserProgressDto: UpdateUserProgressDto,
+  ): Promise<UserProgress | null> {
+    return this.userProgressModel.findByIdAndUpdate(id, updateUserProgressDto, {
+      new: true,
+    });
+  }
+
+  async remove(id: string): Promise<void> {
+    await this.userProgressModel.findByIdAndDelete(id);
+  }
+
+  async getByUserRole(userPayload: UserPayload): Promise<any> {
+    const userRole = userPayload.role;
+    if (userRole === 'TEACHER') {
+      const userProgress = await this.userProgressModel
+        .find({ user_id: userPayload.id })
+        .exec();
+      return userProgress;
+    }
+
+    if (userRole === 'STUDENT') {
+      const userProgress = await this.userProgressModel
+        .find({ user_id: userPayload.id })
+        .exec();
+
+      return userProgress;
+    }
+  }
+}

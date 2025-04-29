@@ -10,63 +10,57 @@ import {
   Req,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { ExerciseService } from './exercise.service';
+import { UserProgressService } from './user_progress.service';
 import { UserValidator } from 'src/utils/user.validator';
-import { CreateExerciseDto } from './dto/create-exercise.dto';
-import { UpdateExerciseDto } from './dto/update-exercise.dto';
+import { UpdateUserProgressDto } from './dto/update-user_progress.dto';
+import { CreateUserProgressDto } from 'src/user_progress/dto/create-user_progress.dto';
 
-@Controller('exercises')
-export class ExerciseController {
+@Controller('user-progress')
+export class UserProgressController {
   constructor(
-    private readonly exerciseService: ExerciseService,
+    private readonly userProgressService: UserProgressService,
     private readonly userValidator: UserValidator,
   ) {}
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  async create(@Body() createExerciseDto: CreateExerciseDto, @Req() req) {
+  async create(
+    @Body() createUserProgressDto: CreateUserProgressDto,
+    @Req() req,
+  ) {
     await this.userValidator.validateAccess(req.user);
-    return await this.exerciseService.create(createExerciseDto);
+    return await this.userProgressService.create(createUserProgressDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get()
   async findAll(@Req() req) {
     await this.userValidator.validateAccess(req.user);
-    return await this.exerciseService.getByUserRole(req.user);
+    return await this.userProgressService.getByUserRole(req.user);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   async findOne(@Param('id') id: string, @Req() req) {
     await this.userValidator.validateAccess(req.user);
-    return await this.exerciseService.findOne(id);
+    return await this.userProgressService.findOne(id);
   }
 
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   async update(
     @Param('id') id: string,
-    @Body() updateExerciseDto: UpdateExerciseDto,
+    @Body() updateUserProgressDto: UpdateUserProgressDto,
     @Req() req,
   ) {
     await this.userValidator.validateAccess(req.user);
-    return await this.exerciseService.update(id, updateExerciseDto);
+    return await this.userProgressService.update(id, updateUserProgressDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async remove(@Param('id') id: string, @Req() req) {
     await this.userValidator.validateAccess(req.user);
-    return await this.exerciseService.remove(id);
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Post(':exerciseId/mark-completed')
-  async markExerciseAsCompleted(
-    @Param('exerciseId') exerciseId: string,
-    @Req() req,
-  ) {
-    return this.exerciseService.markExerciseAsCompleted(req.user, exerciseId);
+    return await this.userProgressService.remove(id);
   }
 }
