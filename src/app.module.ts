@@ -5,9 +5,8 @@ import { LessonPlanModule } from './lesson_plan/lesson_plan.module';
 import { LessonsModule } from './lessons/lessons.module';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { RabbitMQConsumerToEducation } from './utils/rabbitmq-to-education-consumer';
-import { RabbitMQProducerToGameService } from './utils/rabbitmq-to-game-producer';
-import { ToEducationController } from './to_education/to_education.controller';
+import { RabbitMQModule } from './rabbitmq/rmq.module';
+import { RabbitMQProducerToGameService } from './rabbitmq/producers/rmq-to-game-producer';
 import { UserModule } from './user/user.module';
 import { UserProgressModule } from './user_progress/user.module';
 
@@ -21,8 +20,9 @@ import { UserProgressModule } from './user_progress/user.module';
     LessonsModule,
     ExerciseModule,
     UserProgressModule,
+    RabbitMQModule
   ],
-  controllers: [ToEducationController],
-  providers: [RabbitMQProducerToGameService, RabbitMQConsumerToEducation],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

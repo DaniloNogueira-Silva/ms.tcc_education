@@ -21,9 +21,4 @@ export class RabbitMQProducerToGameService {
     console.log(`📤 Sending message: ${message}`);
     return this.client.emit('to_game', message);
   }
-
-  async sendMessageToKrl(message: object) {
-    console.log(`📤 Sending message: ${message}`);
-    return this.client.emit('to_krl', message);
-  }
 }
