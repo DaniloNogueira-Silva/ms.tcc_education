@@ -1,8 +1,9 @@
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
+import { ExerciseListModule } from './exercise_list/exercise_list.module';
 import { ExerciseModule } from './exercise/exercise.module';
-import { LessonPlanModule } from './lesson_plan/lesson_plan.module';
 import { LessonModule } from './lessons/lesson.module';
+import { LessonPlanModule } from './lesson_plan/lesson_plan.module';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { RabbitMQModule } from './rabbitmq/rmq.module';
@@ -21,6 +22,7 @@ import { UserProgressModule } from './user_progress/user_progress.module';
     ExerciseModule,
     UserProgressModule,
     RabbitMQModule,
+    ExerciseListModule,
   ],
   controllers: [],
   providers: [],

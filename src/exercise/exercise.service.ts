@@ -155,9 +155,10 @@ export class ExerciseService {
     }
   }
 
-  async markExerciseAsCompleted(
+  async finalizeMultipleChoiceExercise(
     userPayload: UserPayload,
     id: string,
+    data: { exercise_id: string; answer: any },
   ): Promise<any> {
     let exercise = await this.exerciseModel.findById(id);
 
@@ -175,12 +176,16 @@ export class ExerciseService {
 
     if (!exercise) throw new NotFoundException('Exercício não encontrado');
 
+    await this.verifyAnswer({
+      exercise_id: data.exercise_id,
+      answer: data.answer,
+    });
+
     const createUserProgressDto: CreateUserProgressDto = {
       user_id: userPayload.id,
       lesson_plan_id: exercise.lesson_plan_id,
       external_id: exercise.id,
       type: 'EXERCISE',
-      points: 100,
     };
 
     const userProgress = await this.userProgressService.create(
@@ -188,5 +193,22 @@ export class ExerciseService {
     );
 
     return userProgress;
+  }
+
+  async verifyAnswer(data: { exercise_id: string; answer: any }): Promise<any> {
+    const exercise = await this.exerciseModel.findById(data.exercise_id);
+
+    if (!exercise) throw new NotFoundException('Exercício não encontrado');
+
+    const answer = JSON.parse(exercise?.answer);
+
+    if (
+      answer !== data.answer &&
+      exercise.type === ExerciseType.MULTIPLE_CHOICE
+    ) {
+      return { points: 0, correct: false };
+    }
+
+    return { points: exercise.points, correct: true };
   }
 }

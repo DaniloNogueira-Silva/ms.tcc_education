@@ -62,11 +62,16 @@ export class ExerciseController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post(':exerciseId/mark-completed')
+  @Post(':exerciseId/multiple-choice')
   async markExerciseAsCompleted(
     @Param('exerciseId') exerciseId: string,
     @Req() req,
+    @Body() data: { exercise_id: string; answer: any },
   ) {
-    return this.exerciseService.markExerciseAsCompleted(req.user, exerciseId);
+    return this.exerciseService.finalizeMultipleChoiceExercise(
+      req.user,
+      exerciseId,
+      data,
+    );
   }
 }
