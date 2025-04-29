@@ -19,7 +19,6 @@ import {
 } from './dto/create-exercise.dto';
 import { UpdateExerciseDto } from './dto/update-exercise.dto';
 import { UserPayload } from 'src/auth/auth.service';
-import { RabbitMQProducerService } from 'src/utils/rabbitmq-producer';
 
 @Injectable()
 export class ExerciseService {
@@ -30,8 +29,6 @@ export class ExerciseService {
     private multipleChoiceExerciseModel: Model<MultipleChoiceExercise>,
     @InjectModel(TrueFalseExercise.name)
     private trueFalseExerciseModel: Model<TrueFalseExercise>,
-
-    private rabbitmqProducer: RabbitMQProducerService,
   ) {}
 
   async create(createExerciseDto: CreateExerciseDto): Promise<Exercise> {

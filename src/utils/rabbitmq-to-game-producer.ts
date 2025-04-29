@@ -3,7 +3,7 @@ import { ClientProxy, ClientProxyFactory, Transport } from '@nestjs/microservice
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class RabbitMQProducerService {
+export class RabbitMQProducerToGameService {
   private client: ClientProxy;
 
   constructor() {
@@ -17,7 +17,7 @@ export class RabbitMQProducerService {
     });
   }
 
-  async sendMessage(message: object) {
+  async sendMessage(message: any) {
     console.log(`📤 Sending message: ${message}`);
     return this.client.emit('to_game', message);
   }
