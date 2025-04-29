@@ -10,24 +10,24 @@ import {
   Req,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { ClassService } from './class.service';
+import { LessonsService } from './lessons.service';
 import { UserValidator } from 'src/utils/user.validator';
-import { CreateClassDto } from './dto/create-class.dto';
-import { UpdateClassDto } from './dto/update-class.dto';
+import { CreateLessonsDto } from './dto/create-lessons.dto';
+import { UpdateLessonsDto } from './dto/update-lessons.dto';
 
 
 @Controller('classes')
-export class ClassController {
+export class LessonsController {
   constructor(
-    private readonly classService: ClassService,
+    private readonly classService: LessonsService,
     private readonly userValidator: UserValidator,
   ) {}
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  async create(@Body() createClassDto: CreateClassDto, @Req() req) {
+  async create(@Body() createLessonsDto: CreateLessonsDto, @Req() req) {
     await this.userValidator.validateAccess(req.user);
-    return await this.classService.create(createClassDto);
+    return await this.classService.create(createLessonsDto);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -48,11 +48,11 @@ export class ClassController {
   @Patch(':id')
   async update(
     @Param('id') id: string,
-    @Body() updateClassDto: UpdateClassDto,
+    @Body() updateLessonsDto: UpdateLessonsDto,
     @Req() req,
   ) {
     await this.userValidator.validateAccess(req.user);
-    return await this.classService.update(id, updateClassDto);
+    return await this.classService.update(id, updateLessonsDto);
   }
 
   @UseGuards(JwtAuthGuard)

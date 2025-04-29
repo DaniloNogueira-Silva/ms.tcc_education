@@ -5,12 +5,16 @@ import { UpdateLessonPlanDto } from './dto/update-lesson_plan.dto';
 import { LessonPlan } from './lesson_plan.schema';
 import { CreateLessonPlanDto } from './dto/create-lesson_plan.dto';
 import { UserPayload } from 'src/auth/auth.service';
+import { UserProgress } from 'src/user_progress/user.schema';
 
 @Injectable()
 export class LessonPlanService {
   constructor(
     @InjectModel(LessonPlan.name)
     private lessonplanModel: Model<LessonPlan>,
+
+    @InjectModel(UserProgress.name)
+    private userProgressModel: Model<UserProgress>,
   ) {}
 
   async create(
@@ -30,7 +34,8 @@ export class LessonPlanService {
 
   async findOne(id: string): Promise<LessonPlan> {
     const lessonplan = await this.lessonplanModel.findById(id);
-    if (!lessonplan) throw new NotFoundException('Plano de aula não encontrado');
+    if (!lessonplan)
+      throw new NotFoundException('Plano de aula não encontrado');
     return lessonplan;
   }
 
@@ -58,19 +63,27 @@ export class LessonPlanService {
       return lessonPlans;
     }
 
-  //   if (userRole === 'STUDENT') {
+    if (userRole === 'STUDENT') {
+      const userProgress = await this.userProgressModel
+        .find({ user_id: userPayload.id })
+        .exec();
 
+      const lessonplans = await this.lessonplanModel
+        .find({ _id: { $in: userProgress.map((p) => p.lesson_plan_id) } })
+        .exec();
 
-  //     let lessonplans: any[] = [];
-  //     for (const userMap of userMapProgress) {
-  //       const lessonPlan = await this.lessonplanModel
-  //         .findById(userMap.lesson_plan_id)
-  //         .exec();
+      return lessonplans;
+    }
+  }
 
-  //       lessonplans.push(lessonPlan);
-  //     }
-
-  //     return lessonplans;
-  //   }
+  async inviteUser(
+    lessonPlanId: string,
+    userId: string,
+  ): Promise<UserProgress> {
+    const userProgress = new this.userProgressModel({
+      user_id: userId,
+      lesson_plan_id: lessonPlanId,
+    });
+    return userProgress.save();
   }
 }

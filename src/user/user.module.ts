@@ -1,7 +1,7 @@
 import { Exercise, ExerciseSchema } from 'src/exercise/exercise.schema';
 import { LessonPlan, LessonPlanSchema } from 'src/lesson_plan/lesson_plan.schema';
 import { User, UserSchema } from './user.schema';
-import { UserClassProgress, UserClassProgressSchema } from 'src/user_class_progress/user_class_progress.schema';
+import { UserProgress, UserProgressSchema } from 'src/user_progress/user.schema';
 
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -15,7 +15,6 @@ import { UserValidator } from '../utils/user.validator';
       { name: User.name, schema: UserSchema },
       { name: LessonPlan.name, schema: LessonPlanSchema },
       { name: Exercise.name, schema: ExerciseSchema },
-      { name: UserClassProgress.name, schema: UserClassProgressSchema },
     ]),
   ],
   controllers: [UserController],

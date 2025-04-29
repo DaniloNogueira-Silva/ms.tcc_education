@@ -22,7 +22,6 @@ export class UserController {
     private readonly userValidator: UserValidator,
   ) {}
 
-  @UseGuards()
   @Post()
   async create(@Body() createUserDto: CreateUserDto, @Req() req) {
     return await this.userService.create(createUserDto);
@@ -33,12 +32,6 @@ export class UserController {
   async findAll(@Req() req) {
     await this.userValidator.validateAccess(req.user);
     return await this.userService.getByUserRole(req.user);
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Get('/statics')
-  async statics(@Req() req) {
-    return await this.userService.getStaticsByUserRole(req.user);
   }
 
   @UseGuards(JwtAuthGuard)

@@ -3,7 +3,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
 @Schema({ timestamps: true })
-export class Class extends Document {
+export class Lessons extends Document {
   @Prop({ required: true })
   teacher_id: string;
 
@@ -11,22 +11,25 @@ export class Class extends Document {
   lesson_plan_id: string;
 
   @Prop({ required: true })
+  type: string;
+
+  @Prop({ required: true })
   name: string;
 
   @Prop({ required: true })
-  description: string;
+  content: string;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   due_date: Date;
 
   @Prop({ required: false })
-  links: string;
+  links: string[];
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   points: number;
 
-  @Prop({ required: true })
-  type: string;
+  @Prop({ required: false })
+  grade: number;
 }
 
-export const ClassSchema = SchemaFactory.createForClass(Class);
+export const LessonsSchema = SchemaFactory.createForClass(Lessons);

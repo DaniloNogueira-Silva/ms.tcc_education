@@ -1,7 +1,9 @@
 import {
   IsArray,
   IsBoolean,
+  IsDate,
   IsEnum,
+  IsNumber,
   IsOptional,
   IsString,
   ValidateNested,
@@ -29,6 +31,14 @@ export class CreateExerciseDto {
   @IsBoolean()
   @IsOptional()
   showAnswer?: boolean;
+
+  @IsDate()
+  @IsOptional()
+  due_date: Date;
+
+  @IsNumber()
+  @IsOptional()
+  points: number;
 }
 
 export class CreateMultipleChoiceExerciseDto extends CreateExerciseDto {

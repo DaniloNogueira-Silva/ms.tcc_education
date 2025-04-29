@@ -24,11 +24,20 @@ export class Exercise extends Document {
 
   @Prop({ required: false })
   teacher_id: string;
+
+  @Prop({ required: false })
+  due_date: Date;
+
+  @Prop({ required: false })
+  points: number;
+
+  @Prop({ required: false })
+  grade: number;
 }
 
 export const ExerciseSchema = SchemaFactory.createForClass(Exercise);
 
-@Schema()
+@Schema({ collection: 'multiple_choice_exercises' })
 export class MultipleChoiceExercise extends Exercise {
   @Prop({ type: [String], required: true })
   options: string[];
@@ -38,7 +47,7 @@ export const MultipleChoiceExerciseSchema = SchemaFactory.createForClass(
   MultipleChoiceExercise,
 );
 
-@Schema()
+@Schema({ collection: 'option_exercises' })
 export class Option {
   @Prop({ required: true })
   statement: string;
@@ -49,7 +58,7 @@ export class Option {
 
 export const OptionSchema = SchemaFactory.createForClass(Option);
 
-@Schema()
+@Schema({ collection: 'true_false_exercises' })
 export class TrueFalseExercise extends Exercise {
   @Prop({ type: [OptionSchema], default: [] })
   options: Option[];
