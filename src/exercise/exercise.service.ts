@@ -21,6 +21,7 @@ import { UpdateExerciseDto } from './dto/update-exercise.dto';
 import { UserPayload } from 'src/auth/auth.service';
 import { CreateUserProgressDto } from 'src/user_progress/dto/create-user_progress.dto';
 import { UserProgressService } from 'src/user_progress/user_progress.service';
+import { RabbitMQProducerToGameService } from 'src/rabbitmq/producers/rmq-to-game-producer';
 
 @Injectable()
 export class ExerciseService {
@@ -33,6 +34,8 @@ export class ExerciseService {
     private trueFalseExerciseModel: Model<TrueFalseExercise>,
 
     private readonly userProgressService: UserProgressService,
+
+    private readonly rmqProducer: RabbitMQProducerToGameService
   ) {}
 
   async create(createExerciseDto: CreateExerciseDto): Promise<Exercise> {
@@ -191,6 +194,8 @@ export class ExerciseService {
     const userProgress = await this.userProgressService.create(
       createUserProgressDto,
     );
+
+    await this.rmqProducer.sendMessage(userProgress);
 
     return userProgress;
   }

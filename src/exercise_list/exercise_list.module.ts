@@ -4,14 +4,18 @@ import { ExerciseListController } from './exercise_list.controller';
 import { ExerciseListService } from './exercise_list.service';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { UserProgressModule } from 'src/user_progress/user_progress.module';
+import { UserProgressService } from 'src/user_progress/user_progress.service';
+import { UserValidator } from 'src/utils/user.validator';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: ExerciseList.name, schema: ExerciseListSchema },
     ]),
+    UserProgressModule,
   ],
   controllers: [ExerciseListController],
-  providers: [ExerciseListService],
+  providers: [ExerciseListService, UserValidator],
 })
 export class ExerciseListModule {}
