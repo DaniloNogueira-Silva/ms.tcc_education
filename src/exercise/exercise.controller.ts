@@ -66,12 +66,26 @@ export class ExerciseController {
   async markExerciseAsCompleted(
     @Param('exerciseId') exerciseId: string,
     @Req() req,
-    @Body() data: { exercise_id: string; answer: any },
+    @Body() answer: any,
   ) {
     return this.exerciseService.finalizeMultipleChoiceExercise(
       req.user,
       exerciseId,
-      data,
+      answer,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':exerciseId/teacher-correction')
+  async teacherCorrection(
+    @Param('exerciseId') exerciseId: string,
+    @Req() req,
+    @Body() updateExerciseDto: UpdateExerciseDto,
+  ) {
+    return this.exerciseService.teacherCorrection(
+      req.user,
+      exerciseId,
+      updateExerciseDto,
     );
   }
 }

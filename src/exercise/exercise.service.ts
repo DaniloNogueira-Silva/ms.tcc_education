@@ -22,6 +22,7 @@ import { UserPayload } from 'src/auth/auth.service';
 import { CreateUserProgressDto } from 'src/user_progress/dto/create-user_progress.dto';
 import { UserProgressService } from 'src/user_progress/user_progress.service';
 import { RabbitMQProducerToGameService } from 'src/rabbitmq/producers/rmq-to-game-producer';
+import { UpdateUserProgressDto } from 'src/user_progress/dto/update-user_progress.dto';
 
 @Injectable()
 export class ExerciseService {
@@ -35,7 +36,7 @@ export class ExerciseService {
 
     private readonly userProgressService: UserProgressService,
 
-    private readonly rmqProducer: RabbitMQProducerToGameService
+    private readonly rmqProducer: RabbitMQProducerToGameService,
   ) {}
 
   async create(createExerciseDto: CreateExerciseDto): Promise<Exercise> {
@@ -160,17 +161,17 @@ export class ExerciseService {
 
   async finalizeMultipleChoiceExercise(
     userPayload: UserPayload,
-    id: string,
-    data: { exercise_id: string; answer: any },
+    exercise_id: string,
+    answer: any,
   ): Promise<any> {
-    let exercise = await this.exerciseModel.findById(id);
+    let exercise = await this.exerciseModel.findById(exercise_id);
 
     if (!exercise) {
-      exercise = await this.multipleChoiceExerciseModel.findById(id);
+      exercise = await this.multipleChoiceExerciseModel.findById(exercise_id);
     }
 
     if (!exercise) {
-      exercise = await this.trueFalseExerciseModel.findById(id);
+      exercise = await this.trueFalseExerciseModel.findById(exercise_id);
     }
 
     if (!exercise) {
@@ -179,9 +180,9 @@ export class ExerciseService {
 
     if (!exercise) throw new NotFoundException('Exercício não encontrado');
 
-    await this.verifyAnswer({
-      exercise_id: data.exercise_id,
-      answer: data.answer,
+    await this.verifyMultipleChoiceAnswer({
+      exercise_id: exercise.id,
+      answer,
     });
 
     const createUserProgressDto: CreateUserProgressDto = {
@@ -200,12 +201,29 @@ export class ExerciseService {
     return userProgress;
   }
 
-  async verifyAnswer(data: { exercise_id: string; answer: any }): Promise<any> {
-    const exercise = await this.exerciseModel.findById(data.exercise_id);
+  async verifyMultipleChoiceAnswer(data: {
+    exercise_id: string;
+    answer: any;
+  }): Promise<any> {
+    let exercise = await this.exerciseModel.findById(data.exercise_id);
+
+    if (!exercise) {
+      exercise = await this.multipleChoiceExerciseModel.findById(
+        data.exercise_id,
+      );
+    }
+
+    if (!exercise) {
+      exercise = await this.trueFalseExerciseModel.findById(data.exercise_id);
+    }
+
+    if (!exercise) {
+      throw new NotFoundException('Exercício não encontrado');
+    }
 
     if (!exercise) throw new NotFoundException('Exercício não encontrado');
 
-    const answer = JSON.parse(exercise?.answer);
+    const answer = exercise?.answer;
 
     if (
       answer !== data.answer &&
@@ -215,5 +233,37 @@ export class ExerciseService {
     }
 
     return { points: exercise.points, correct: true };
+  }
+
+  async teacherCorrection(
+    userPayload: UserPayload,
+    exercise_id: string,
+    data: UpdateUserProgressDto,
+  ) {
+    const userProgress =
+      await this.userProgressService.findOneByExerciseAndUser(
+        exercise_id,
+        userPayload.id,
+      );
+
+    if (!userProgress) {
+      throw new NotFoundException('Progresso do usuário não encontrado');
+    }
+
+    const updateUserProgressDto: UpdateUserProgressDto = {
+      final_grade: data.final_grade,
+      points: data.points,
+    };
+
+    await this.userProgressService.update(
+      userProgress.id,
+      updateUserProgressDto,
+    );
+
+    return {
+      userProgressId: userProgress.id,
+      grade: data.final_grade,
+      points: data.points,
+    };
   }
 }

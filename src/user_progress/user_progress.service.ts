@@ -63,4 +63,17 @@ export class UserProgressService {
       return userProgress;
     }
   }
+
+  async findOneByExerciseAndUser(
+    externalId: string,
+    userId: string,
+  ): Promise<UserProgress> {
+    const userProgress = await this.userProgressModel
+      .findOne({ external_id: externalId, user_id: userId })
+      .exec();
+
+    if (!userProgress)
+      throw new NotFoundException('Progress do usuário não encontrado');
+    return userProgress;
+  }
 }

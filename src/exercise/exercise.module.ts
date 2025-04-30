@@ -12,6 +12,7 @@ import { ExerciseService } from './exercise.service';
 import { ExerciseController } from './exercise.controller';
 import { UserValidator } from 'src/utils/user.validator';
 import { UserProgressModule } from 'src/user_progress/user_progress.module';
+import { RabbitMQModule } from 'src/rabbitmq/rmq.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { UserProgressModule } from 'src/user_progress/user_progress.module';
       { name: TrueFalseExercise.name, schema: TrueFalseExerciseSchema },
     ]),
     UserProgressModule,
+    RabbitMQModule,
   ],
   controllers: [ExerciseController],
   providers: [ExerciseService, UserValidator],
