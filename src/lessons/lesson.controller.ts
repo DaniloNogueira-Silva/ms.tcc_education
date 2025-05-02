@@ -34,7 +34,7 @@ export class LessonController {
   @Get()
   async findAll(@Req() req) {
     await this.userValidator.validateAccess(req.user);
-    return await this.lessonService.getByUserRole(req.user);
+    return await this.lessonService.findAll();
   }
 
   @UseGuards(JwtAuthGuard)

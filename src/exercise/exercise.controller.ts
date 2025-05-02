@@ -33,7 +33,7 @@ export class ExerciseController {
   @Get()
   async findAll(@Req() req) {
     await this.userValidator.validateAccess(req.user);
-    return await this.exerciseService.getByUserRole(req.user);
+    return await this.exerciseService.findAll();
   }
 
   @UseGuards(JwtAuthGuard)
