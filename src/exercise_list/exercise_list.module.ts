@@ -4,9 +4,9 @@ import { ExerciseListController } from './exercise_list.controller';
 import { ExerciseListService } from './exercise_list.service';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UserProgressModule } from 'src/user_progress/user_progress.module';
-import { UserProgressService } from 'src/user_progress/user_progress.service';
-import { UserValidator } from 'src/utils/user.validator';
+import { UserProgressModule } from '../user_progress/user_progress.module';
+import { UserProgressService } from '../user_progress/user_progress.service';
+import { UserValidator } from '../utils/user.validator';
 
 @Module({
   imports: [

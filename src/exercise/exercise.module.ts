@@ -1,5 +1,3 @@
-import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
 import {
   Exercise,
   ExerciseSchema,
@@ -8,11 +6,14 @@ import {
   TrueFalseExercise,
   TrueFalseExerciseSchema,
 } from './exercise.schema';
-import { ExerciseService } from './exercise.service';
+
 import { ExerciseController } from './exercise.controller';
-import { UserValidator } from 'src/utils/user.validator';
-import { UserProgressModule } from 'src/user_progress/user_progress.module';
-import { RabbitMQModule } from 'src/rabbitmq/rmq.module';
+import { ExerciseService } from './exercise.service';
+import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import { RabbitMQModule } from '../rabbitmq/rmq.module';
+import { UserProgressModule } from '../user_progress/user_progress.module';
+import { UserValidator } from '../utils/user.validator';
 
 @Module({
   imports: [

@@ -9,12 +9,12 @@ import {
   UseGuards,
   Req,
 } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { LessonService } from './lesson.service';
-import { UserValidator } from 'src/utils/user.validator';
+import { UserValidator } from '../utils/user.validator';
 import { CreateLessonDto } from './dto/create-lesson.dto';
 import { UpdateLessonDto } from './dto/update-lesson.dto';
-import { UserPayload } from 'src/auth/auth.service';
+import { UserPayload } from '../auth/auth.service';
 
 @Controller('lessons')
 export class LessonController {

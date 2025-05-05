@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { UserPayload } from 'src/auth/auth.service';
-import { UserProgressService } from 'src/user_progress/user_progress.service';
-import { CreateUserProgressDto } from 'src/user_progress/dto/create-user_progress.dto';
+import { UserPayload } from '../auth/auth.service';
+import { UserProgressService } from '../user_progress/user_progress.service';
+import { CreateUserProgressDto } from '../user_progress/dto/create-user_progress.dto';
 import { ExerciseList } from './exercise_list.schema';
 import { CreateExerciseListDto } from './dto/create-exercise_list.dto';
 import { UpdateExerciseListDto } from './dto/update-exercise_list.dto';

@@ -9,11 +9,11 @@ import {
   UseGuards,
   Req,
 } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UserProgressService } from './user_progress.service';
-import { UserValidator } from 'src/utils/user.validator';
+import { UserValidator } from '../utils/user.validator';
 import { UpdateUserProgressDto } from './dto/update-user_progress.dto';
-import { CreateUserProgressDto } from 'src/user_progress/dto/create-user_progress.dto';
+import { CreateUserProgressDto } from '../user_progress/dto/create-user_progress.dto';
 
 @Controller('user-progress')
 export class UserProgressController {

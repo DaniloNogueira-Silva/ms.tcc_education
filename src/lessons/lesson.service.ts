@@ -4,9 +4,9 @@ import { Model } from 'mongoose';
 import { UpdateLessonDto } from './dto/update-lesson.dto';
 import { Lesson } from './lesson.schema';
 import { CreateLessonDto } from './dto/create-lesson.dto';
-import { UserPayload } from 'src/auth/auth.service';
-import { UserProgressService } from 'src/user_progress/user_progress.service';
-import { CreateUserProgressDto } from 'src/user_progress/dto/create-user_progress.dto';
+import { UserPayload } from '../auth/auth.service';
+import { UserProgressService } from '../user_progress/user_progress.service';
+import { CreateUserProgressDto } from '../user_progress/dto/create-user_progress.dto';
 
 @Injectable()
 export class LessonService {

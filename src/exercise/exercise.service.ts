@@ -18,11 +18,11 @@ import {
   CreateTrueFalseExerciseDto,
 } from './dto/create-exercise.dto';
 import { UpdateExerciseDto } from './dto/update-exercise.dto';
-import { UserPayload } from 'src/auth/auth.service';
-import { CreateUserProgressDto } from 'src/user_progress/dto/create-user_progress.dto';
-import { UserProgressService } from 'src/user_progress/user_progress.service';
-import { RabbitMQProducerToGameService } from 'src/rabbitmq/producers/rmq-to-game-producer';
-import { UpdateUserProgressDto } from 'src/user_progress/dto/update-user_progress.dto';
+import { UserPayload } from '../auth/auth.service';
+import { CreateUserProgressDto } from '../user_progress/dto/create-user_progress.dto';
+import { UserProgressService } from '../user_progress/user_progress.service';
+import { RabbitMQProducerToGameService } from '../rabbitmq/producers/rmq-to-game-producer';
+import { UpdateUserProgressDto } from '../user_progress/dto/update-user_progress.dto';
 
 @Injectable()
 export class ExerciseService {

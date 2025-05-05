@@ -4,8 +4,8 @@ import { LessonController } from './lesson.controller';
 import { LessonService } from './lesson.service';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UserValidator } from 'src/utils/user.validator';
-import { UserProgressModule } from 'src/user_progress/user_progress.module';
+import { UserProgressModule } from '../user_progress/user_progress.module';
+import { UserValidator } from '../utils/user.validator';
 
 @Module({
   imports: [

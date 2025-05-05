@@ -4,9 +4,9 @@ import { Model } from 'mongoose';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './user.schema';
-import { UserPayload } from 'src/auth/auth.service';
-import { LessonPlan } from 'src/lesson_plan/lesson_plan.schema';
-import { Exercise } from 'src/exercise/exercise.schema';
+import { UserPayload } from '../auth/auth.service';
+import { LessonPlan } from '../lesson_plan/lesson_plan.schema';
+import { Exercise } from '../exercise/exercise.schema';
 
 @Injectable()
 export class UserService {

@@ -9,8 +9,8 @@ import {
   UseGuards,
   Req,
 } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { UserValidator } from 'src/utils/user.validator';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { UserValidator } from '../utils/user.validator';
 import { ExerciseListService } from './exercise_list.service';
 import { CreateExerciseListDto } from './dto/create-exercise_list.dto';
 import { UpdateExerciseListDto } from './dto/update-exercise_list.dto';

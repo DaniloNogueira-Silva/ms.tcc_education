@@ -1,6 +1,6 @@
 import { ForbiddenException } from '@nestjs/common';
-import { UserPayload } from 'src/auth/auth.service';
-import { UserRoles } from 'src/user/enum/roles.enum';
+import { UserPayload } from '../auth/auth.service';
+import { UserRoles } from '../user/enum/roles.enum';
 
 export class UserValidator {
   async validateAccess(
