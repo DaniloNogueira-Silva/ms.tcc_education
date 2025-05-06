@@ -71,4 +71,11 @@ export class LessonPlanController {
     await this.userValidator.validateAccess(req.user);
     return await this.lessonplanService.inviteUser(createUserProgressDto);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/progress')
+  async progress(@Req() req) {
+    await this.userValidator.validateAccess(req.user);
+    return await this.lessonplanService.getByUserRole(req.user);
+  }
 }
