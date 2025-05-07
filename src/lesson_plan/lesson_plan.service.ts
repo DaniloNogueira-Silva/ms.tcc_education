@@ -86,11 +86,25 @@ export class LessonPlanService {
     const userRole = userPayload.role;
 
     if (userRole === 'TEACHER') {
-      const lessonPlans = await this.lessonplanModel
+
+      const lessonplans = await this.lessonplanModel
         .find({ teacher_id: userPayload.id })
         .exec();
 
-      return lessonPlans;
+      let teste: {
+        progress: number;
+        teacher: User | null;
+        lessonplan: LessonPlan;
+      }[] = [];
+      for (const lessonplan of lessonplans) {
+        const teacher = await this.userModel
+          .findById(lessonplan.teacher_id)
+          .exec();
+
+        teste.push({ teacher, lessonplan, progress: 100 });
+      }
+
+      return teste;
     }
 
     if (userRole === 'STUDENT') {
@@ -103,8 +117,7 @@ export class LessonPlanService {
         .exec();
 
       let teste: {
-        total: number;
-        lessonsCompleted: number;
+        progress: number;
         teacher: User | null;
         lessonplan: LessonPlan;
       }[] = [];
@@ -155,7 +168,12 @@ export class LessonPlanService {
           (p) => p.lesson_plan_id === lessonplan._id,
         ).length;
 
-        teste.push({ total, lessonsCompleted, teacher, lessonplan });
+        const progress =
+          total > 0
+            ? Math.min(Math.round((lessonsCompleted / total) * 100), 100)
+            : 0;
+
+        teste.push({ teacher, lessonplan, progress });
       }
 
       return teste;

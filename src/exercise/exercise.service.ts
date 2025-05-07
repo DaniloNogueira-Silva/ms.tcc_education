@@ -35,8 +35,6 @@ export class ExerciseService {
     private trueFalseExerciseModel: Model<TrueFalseExercise>,
 
     private readonly userProgressService: UserProgressService,
-
-    private readonly rmqProducer: RabbitMQProducerToGameService,
   ) {}
 
   async create(createExerciseDto: CreateExerciseDto): Promise<Exercise> {
@@ -195,8 +193,6 @@ export class ExerciseService {
     const userProgress = await this.userProgressService.create(
       createUserProgressDto,
     );
-
-    await this.rmqProducer.sendMessage(userProgress);
 
     return userProgress;
   }

@@ -11,7 +11,6 @@ import { ExerciseController } from './exercise.controller';
 import { ExerciseService } from './exercise.service';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { RabbitMQModule } from '../rabbitmq/rmq.module';
 import { UserProgressModule } from '../user_progress/user_progress.module';
 import { UserValidator } from '../utils/user.validator';
 
@@ -26,7 +25,6 @@ import { UserValidator } from '../utils/user.validator';
       { name: TrueFalseExercise.name, schema: TrueFalseExerciseSchema },
     ]),
     UserProgressModule,
-    RabbitMQModule,
   ],
   controllers: [ExerciseController],
   providers: [ExerciseService, UserValidator],

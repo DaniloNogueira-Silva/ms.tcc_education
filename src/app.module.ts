@@ -6,8 +6,6 @@ import { LessonModule } from './lessons/lesson.module';
 import { LessonPlanModule } from './lesson_plan/lesson_plan.module';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { RabbitMQModule } from './rabbitmq/rmq.module';
-import { RabbitMQProducerToGameService } from './rabbitmq/producers/rmq-to-game-producer';
 import { UserModule } from './user/user.module';
 import { UserProgressModule } from './user_progress/user_progress.module';
 
@@ -21,7 +19,6 @@ import { UserProgressModule } from './user_progress/user_progress.module';
     LessonModule,
     ExerciseModule,
     UserProgressModule,
-    RabbitMQModule,
     ExerciseListModule,
   ],
   controllers: [],
