@@ -33,16 +33,16 @@ export class AuthService {
     return user;
   }
 
-  async login(loginDto: LoginDto): Promise<string> {
+  async login(loginDto: LoginDto): Promise<object> {
     const user = await this.validateUser(loginDto.email, loginDto.password);
 
     const payload = {
-      _id: user._id, // ✅ Mantendo o _id como no payload original do JWT
+      _id: user._id,
       name: user.name,
       email: user.email,
       role: user.role,
     };
 
-    return this.jwtService.sign(payload);
+    return { access_token: this.jwtService.sign(payload) };
   }
 }
