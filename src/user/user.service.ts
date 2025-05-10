@@ -13,12 +13,6 @@ export class UserService {
   constructor(
     @InjectModel(User.name)
     private userModel: Model<User>,
-
-    @InjectModel(LessonPlan.name)
-    private lessonPlanModel: Model<LessonPlan>,
-
-    @InjectModel(Exercise.name)
-    private exerciseModel: Model<Exercise>,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {

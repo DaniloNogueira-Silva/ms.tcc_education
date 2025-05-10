@@ -5,12 +5,16 @@ import { UpdateUserProgressDto } from './dto/update-user_progress.dto';
 import { CreateUserProgressDto } from './dto/create-user_progress.dto';
 import { UserPayload } from '../auth/auth.service';
 import { UserProgress } from '../user_progress/user_progress.schema';
+import { User } from 'src/user/user.schema';
 
 @Injectable()
 export class UserProgressService {
   constructor(
     @InjectModel(UserProgress.name)
     private userProgressModel: Model<UserProgress>,
+
+    @InjectModel(User.name)
+    private userModel: Model<User>,
   ) {}
 
   async create(
@@ -75,5 +79,25 @@ export class UserProgressService {
     if (!userProgress)
       throw new NotFoundException('Progress do usuário não encontrado');
     return userProgress;
+  }
+
+  async findByLessonPlanAndType(
+    externalId: string,
+    type: string,
+  ): Promise<UserProgress[]> {
+    const userProgress = await this.userProgressModel
+      .find({
+        type,
+        external_id: externalId,
+      })
+      .exec();
+
+    const userIds = userProgress.map((userProgress) => userProgress.user_id);
+    const users = await this.userModel.find({ _id: { $in: userIds } }).exec();
+
+    return userProgress.map((userProgress) => ({
+      ...userProgress.toJSON(),
+      user: users.find((user) => user.id === userProgress.user_id),
+    }));
   }
 }

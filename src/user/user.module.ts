@@ -12,8 +12,6 @@ import { UserValidator } from '../utils/user.validator';
   imports: [
     MongooseModule.forFeature([
       { name: User.name, schema: UserSchema },
-      { name: LessonPlan.name, schema: LessonPlanSchema },
-      { name: Exercise.name, schema: ExerciseSchema },
     ]),
   ],
   controllers: [UserController],
