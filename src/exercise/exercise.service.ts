@@ -178,6 +178,8 @@ export class ExerciseService {
 
     if (!exercise) throw new NotFoundException('Exercício não encontrado');
 
+    console.log('🚀 ~ exercise', exercise);
+    
     await this.verifyMultipleChoiceAnswer({
       exercise_id: exercise.id,
       answer,

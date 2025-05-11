@@ -39,6 +39,10 @@ export class CreateExerciseDto {
   @IsNumber()
   @IsOptional()
   points: number;
+
+  @IsString()
+  @IsOptional()
+  lesson_plan_id: string;
 }
 
 export class CreateMultipleChoiceExerciseDto extends CreateExerciseDto {
