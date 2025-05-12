@@ -37,6 +37,13 @@ export class ExerciseController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Get(':planId/byLessonPlan')
+  async findAllByLessonPlan(@Param('planId') planId: string, @Req() req) {
+    await this.userValidator.validateAccess(req.user);
+    return await this.exerciseService.findAllByLessonPlan(planId);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   async findOne(@Param('id') id: string, @Req() req) {
     await this.userValidator.validateAccess(req.user);

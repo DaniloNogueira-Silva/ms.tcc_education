@@ -69,6 +69,19 @@ export class ExerciseService {
     return [...exercises, ...multipleChoiceExercises, ...trueFalseExercises];
   }
 
+  async findAllByLessonPlan(planId: string) {
+    const [exercises, multipleChoiceExercises, trueFalseExercises] =
+      await Promise.all([
+        this.exerciseModel.find({ lesson_plan_id: planId }).exec(),
+        this.multipleChoiceExerciseModel
+          .find({ lesson_plan_id: planId })
+          .exec(),
+        this.trueFalseExerciseModel.find({ lesson_plan_id: planId }).exec(),
+      ]);
+
+    return [...exercises, ...multipleChoiceExercises, ...trueFalseExercises];
+  }
+
   async findOne(id: string): Promise<Exercise> {
     let exercise = await this.exerciseModel.findById(id);
 
@@ -179,7 +192,7 @@ export class ExerciseService {
     if (!exercise) throw new NotFoundException('Exercício não encontrado');
 
     console.log('🚀 ~ exercise', exercise);
-    
+
     await this.verifyMultipleChoiceAnswer({
       exercise_id: exercise.id,
       answer,
