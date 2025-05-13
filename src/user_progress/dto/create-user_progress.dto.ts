@@ -13,6 +13,10 @@ export class CreateUserProgressDto {
 
   @IsString()
   @IsOptional()
+  answer?: string;
+
+  @IsString()
+  @IsOptional()
   type?: string;
 
   @IsNumber()

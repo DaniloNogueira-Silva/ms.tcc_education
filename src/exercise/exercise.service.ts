@@ -170,11 +170,11 @@ export class ExerciseService {
     }
   }
 
-  async finalizeMultipleChoiceExercise(
+  async submitAnswer(
     userPayload: UserPayload,
     exercise_id: string,
-    answer: any,
-  ): Promise<any> {
+    updateUserProgressDto: UpdateUserProgressDto,
+  ): Promise<UpdateUserProgressDto> {
     let exercise = await this.exerciseModel.findById(exercise_id);
 
     if (!exercise) {
@@ -189,18 +189,15 @@ export class ExerciseService {
       throw new NotFoundException('Exercício não encontrado');
     }
 
-    if (!exercise) throw new NotFoundException('Exercício não encontrado');
-
-    console.log('🚀 ~ exercise', exercise);
-
-    await this.verifyMultipleChoiceAnswer({
-      exercise_id: exercise.id,
-      answer,
-    });
+    // await this.verifyMultipleChoiceAnswer({
+    //   exercise_id: exercise.id,
+    //   answer: updateUserProgressDto.answer,
+    // });
 
     const createUserProgressDto: CreateUserProgressDto = {
       user_id: userPayload.id,
       lesson_plan_id: exercise.lesson_plan_id,
+      answer: updateUserProgressDto.answer,
       external_id: exercise.id,
       type: 'EXERCISE',
     };

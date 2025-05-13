@@ -38,6 +38,16 @@ export class LessonController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Get(':lessonPlanId/byLessonPlan')
+  async findAllByLessonPlan(
+    @Param('lessonPlanId') lessonPlanId: string,
+    @Req() req,
+  ) {
+    await this.userValidator.validateAccess(req.user);
+    return await this.lessonService.findAllByLessonPlan(lessonPlanId);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   async findOne(@Param('id') id: string, @Req() req) {
     await this.userValidator.validateAccess(req.user);

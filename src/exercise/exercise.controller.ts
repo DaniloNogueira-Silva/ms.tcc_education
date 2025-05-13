@@ -14,6 +14,7 @@ import { ExerciseService } from './exercise.service';
 import { UserValidator } from '../utils/user.validator';
 import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { UpdateExerciseDto } from './dto/update-exercise.dto';
+import { UpdateUserProgressDto } from 'src/user_progress/dto/update-user_progress.dto';
 
 @Controller('exercises')
 export class ExerciseController {
@@ -37,10 +38,13 @@ export class ExerciseController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get(':planId/byLessonPlan')
-  async findAllByLessonPlan(@Param('planId') planId: string, @Req() req) {
+  @Get(':lessonPlanId/byLessonPlan')
+  async findAllByLessonPlan(
+    @Param('lessonPlanId') lessonPlanId: string,
+    @Req() req,
+  ) {
     await this.userValidator.validateAccess(req.user);
-    return await this.exerciseService.findAllByLessonPlan(planId);
+    return await this.exerciseService.findAllByLessonPlan(lessonPlanId);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -69,16 +73,16 @@ export class ExerciseController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post(':exerciseId/multiple-choice')
+  @Post(':exerciseId/submitAnswer')
   async markExerciseAsCompleted(
     @Param('exerciseId') exerciseId: string,
     @Req() req,
-    @Body() answer: any,
+    @Body() updateUserProgressDto: UpdateUserProgressDto,
   ) {
-    return this.exerciseService.finalizeMultipleChoiceExercise(
+    return this.exerciseService.submitAnswer(
       req.user,
       exerciseId,
-      answer,
+      updateUserProgressDto,
     );
   }
 

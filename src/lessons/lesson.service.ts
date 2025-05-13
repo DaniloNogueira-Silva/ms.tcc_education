@@ -26,6 +26,10 @@ export class LessonService {
     return this.lessonModel.find().exec();
   }
 
+  async findAllByLessonPlan(lessonPlanId: string): Promise<Lesson[]> {
+    return this.lessonModel.find({ lesson_plan_id: lessonPlanId }).exec();
+  }
+
   async findOne(id: string): Promise<Lesson> {
     const Lessons = await this.lessonModel.findById(id);
     if (!Lessons) throw new NotFoundException('Aula não encontrado');

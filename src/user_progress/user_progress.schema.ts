@@ -14,6 +14,9 @@ export class UserProgress extends Document {
   external_id: string;
 
   @Prop({ required: false })
+  answer: string;
+
+  @Prop({ required: false })
   type: string;
 
   @Prop({ required: false })
