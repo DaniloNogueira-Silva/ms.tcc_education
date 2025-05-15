@@ -7,6 +7,7 @@ import { CreateLessonDto } from './dto/create-lesson.dto';
 import { UserPayload } from '../auth/auth.service';
 import { UserProgressService } from '../user_progress/user_progress.service';
 import { CreateUserProgressDto } from '../user_progress/dto/create-user_progress.dto';
+import axios from 'axios';
 
 @Injectable()
 export class LessonService {
@@ -80,6 +81,11 @@ export class LessonService {
 
     const userProgress = await this.userProgressService.create(
       createUserProgressDto,
+    );
+
+    await axios.post(
+      'http://localhost:3003/user-character/complete-activity',
+      userProgress,
     );
 
     return userProgress;

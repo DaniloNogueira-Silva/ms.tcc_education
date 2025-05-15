@@ -21,7 +21,6 @@ import { UpdateExerciseDto } from './dto/update-exercise.dto';
 import { UserPayload } from '../auth/auth.service';
 import { CreateUserProgressDto } from '../user_progress/dto/create-user_progress.dto';
 import { UserProgressService } from '../user_progress/user_progress.service';
-import { RabbitMQProducerToGameService } from '../rabbitmq/producers/rmq-to-game-producer';
 import { UpdateUserProgressDto } from '../user_progress/dto/update-user_progress.dto';
 
 @Injectable()
