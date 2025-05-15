@@ -4,7 +4,7 @@ import { Document } from 'mongoose';
 
 @Schema({ timestamps: true, collection: 'user_progress' })
 export class UserProgress extends Document {
-  @Prop({ required: true })
+  @Prop({ required: true, ref: 'User' })
   user_id: string;
 
   @Prop({ required: true })

@@ -38,6 +38,17 @@ export class UserProgressController {
     return await this.userProgressService.getByUserRole(req.user);
   }
 
+  @Get('exercise/:exerciseId')
+  async findAllStudentsByExerciseId(
+    @Param('exerciseId') exerciseId: string,
+    @Req() req,
+  ) {
+    await this.userValidator.validateAccess(req.user);
+    return await this.userProgressService.findAllStudentsByExerciseId(
+      exerciseId,
+    );
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: string, @Req() req) {
     await this.userValidator.validateAccess(req.user);

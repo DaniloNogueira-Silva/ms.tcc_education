@@ -30,6 +30,15 @@ export class UserProgressService {
     return this.userProgressModel.find().exec();
   }
 
+  async findAllStudentsByExerciseId(
+    exerciseId: string,
+  ): Promise<UserProgress[]> {
+    return this.userProgressModel
+      .find({ external_id: exerciseId })
+      .populate('user_id', 'name')
+      .exec();
+  }
+
   async findOne(id: string): Promise<UserProgress> {
     const userProgress = await this.userProgressModel.findById(id);
     if (!userProgress)

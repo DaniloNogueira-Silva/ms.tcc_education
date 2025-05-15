@@ -173,8 +173,8 @@ export class ExerciseService {
   async submitAnswer(
     userPayload: UserPayload,
     exercise_id: string,
-    updateUserProgressDto: UpdateUserProgressDto,
-  ): Promise<UpdateUserProgressDto> {
+    createUserProgressDto: CreateUserProgressDto,
+  ): Promise<CreateUserProgressDto> {
     let exercise = await this.exerciseModel.findById(exercise_id);
 
     if (!exercise) {
@@ -194,17 +194,16 @@ export class ExerciseService {
     //   answer: updateUserProgressDto.answer,
     // });
 
-    const createUserProgressDto: CreateUserProgressDto = {
+    const createUserProgress: CreateUserProgressDto = {
       user_id: userPayload.id,
       lesson_plan_id: exercise.lesson_plan_id,
-      answer: updateUserProgressDto.answer,
+      answer: createUserProgressDto.answer,
       external_id: exercise.id,
       type: 'EXERCISE',
     };
 
-    const userProgress = await this.userProgressService.create(
-      createUserProgressDto,
-    );
+    const userProgress =
+      await this.userProgressService.create(createUserProgress);
 
     return userProgress;
   }
@@ -243,15 +242,17 @@ export class ExerciseService {
     return { points: exercise.points, correct: true };
   }
 
-  async teacherCorrection(
-    userPayload: UserPayload,
-    exercise_id: string,
-    data: UpdateUserProgressDto,
-  ) {
+  async teacherCorrection(exercise_id: string, data: UpdateUserProgressDto) {
+    const studentUserId = data.user_id;
+
+    if (!studentUserId) {
+      throw new BadRequestException('ID do aluno é obrigatório');
+    }
+
     const userProgress =
       await this.userProgressService.findOneByExerciseAndUser(
         exercise_id,
-        userPayload.id,
+        studentUserId,
       );
 
     if (!userProgress) {

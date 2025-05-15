@@ -15,6 +15,7 @@ import { UserValidator } from '../utils/user.validator';
 import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { UpdateExerciseDto } from './dto/update-exercise.dto';
 import { UpdateUserProgressDto } from 'src/user_progress/dto/update-user_progress.dto';
+import { CreateUserProgressDto } from 'src/user_progress/dto/create-user_progress.dto';
 
 @Controller('exercises')
 export class ExerciseController {
@@ -74,29 +75,30 @@ export class ExerciseController {
 
   @UseGuards(JwtAuthGuard)
   @Post(':exerciseId/submitAnswer')
-  async markExerciseAsCompleted(
+  async submitAnswer(
     @Param('exerciseId') exerciseId: string,
     @Req() req,
-    @Body() updateUserProgressDto: UpdateUserProgressDto,
+    @Body() createUserProgressDto: CreateUserProgressDto,
   ) {
+    await this.userValidator.validateAccess(req.user);
     return this.exerciseService.submitAnswer(
       req.user,
       exerciseId,
-      updateUserProgressDto,
+      createUserProgressDto,
     );
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post(':exerciseId/teacher-correction')
+  @Patch(':exerciseId/teacher-correction')
   async teacherCorrection(
     @Param('exerciseId') exerciseId: string,
     @Req() req,
-    @Body() updateExerciseDto: UpdateExerciseDto,
+    @Body() updateUserProgressDto: UpdateUserProgressDto,
   ) {
+    await this.userValidator.validateAccess(req.user);
     return this.exerciseService.teacherCorrection(
-      req.user,
       exerciseId,
-      updateExerciseDto,
+      updateUserProgressDto,
     );
   }
 }
