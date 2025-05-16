@@ -7,6 +7,7 @@ import { User } from './user.schema';
 import { UserPayload } from '../auth/auth.service';
 import { LessonPlan } from '../lesson_plan/lesson_plan.schema';
 import { Exercise } from '../exercise/exercise.schema';
+import axios from 'axios';
 
 @Injectable()
 export class UserService {
@@ -17,7 +18,22 @@ export class UserService {
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     const createdUser = new this.userModel(createUserDto);
-    return createdUser.save();
+    const user = await createdUser.save();
+
+    await axios.post(
+      'http://localhost:3003/user-character/user-character',
+      {
+        user_id: user.id,
+        name: user.name,
+        level: 1,
+        points: 0,
+        rank: 'BRONZE',
+        trophies: [],
+        avatar_id: ""
+      },
+    );
+
+    return user;
   }
 
   async findAll(): Promise<User[]> {
