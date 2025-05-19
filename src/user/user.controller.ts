@@ -27,6 +27,14 @@ export class UserController {
     return await this.userService.create(createUserDto);
   }
 
+  
+  @UseGuards(JwtAuthGuard)
+  @Get('stats')
+  async getStats(@Req() req) {
+    await this.userValidator.validateAccess(req.user);
+    return await this.userService.getStats(req.user);
+  }
+
   @UseGuards(JwtAuthGuard)
   @Get()
   async findAll(@Req() req) {
