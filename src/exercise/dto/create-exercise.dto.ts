@@ -25,30 +25,39 @@ export class CreateExerciseDto {
   @IsString()
   answer: string;
 
-  @IsString()
-  teacher_id: string;
-
   @IsBoolean()
   @IsOptional()
   showAnswer?: boolean;
 
+  @IsString()
+  teacher_id: string;
+
   @IsDate()
   @IsOptional()
-  due_date: Date;
+  due_date?: Date;
 
   @IsNumber()
   @IsOptional()
-  points: number;
+  points?: number;
 
-  @IsString()
+  @IsNumber()
   @IsOptional()
-  lesson_plan_id: string;
-}
+  grade?: number;
 
-export class CreateMultipleChoiceExerciseDto extends CreateExerciseDto {
   @IsArray()
   @IsString({ each: true })
-  options: string[];
+  @IsOptional()
+  multiple_choice_options?: string[];
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @IsOptional()
+  true_false_options?: OptionDto[];
+
+  @IsArray()
+  @IsString({ each: true })
+  @IsOptional()
+  lesson_plan_ids?: string[];
 }
 
 export class OptionDto {
@@ -57,10 +66,4 @@ export class OptionDto {
 
   @IsBoolean()
   answer: boolean;
-}
-
-export class CreateTrueFalseExerciseDto extends CreateExerciseDto {
-  @IsArray()
-  @ValidateNested({ each: true })
-  options: OptionDto[];
 }

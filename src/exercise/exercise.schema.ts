@@ -1,5 +1,4 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-
 import { Document } from 'mongoose';
 
 export enum ExerciseType {
@@ -8,7 +7,18 @@ export enum ExerciseType {
   TRUE_FALSE = 'true_false',
 }
 
-@Schema({ timestamps: true, discriminatorKey: 'type', collection: 'exercises' })
+@Schema()
+export class Option {
+  @Prop({ required: true })
+  statement: string;
+
+  @Prop({ required: true })
+  answer: boolean;
+}
+
+export const OptionSchema = SchemaFactory.createForClass(Option);
+
+@Schema({ timestamps: true, collection: 'exercises' })
 export class Exercise extends Document {
   @Prop({ required: true })
   statement: string;
@@ -16,14 +26,11 @@ export class Exercise extends Document {
   @Prop({ required: true, enum: ExerciseType })
   type: ExerciseType;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   answer: string;
 
   @Prop({ default: false })
   showAnswer: boolean;
-
-  @Prop({ required: false })
-  lesson_plan_id: string;
 
   @Prop({ required: false })
   teacher_id: string;
@@ -36,36 +43,12 @@ export class Exercise extends Document {
 
   @Prop({ required: false })
   grade: number;
+
+  @Prop({ type: [String], required: false })
+  multiple_choice_options?: string[];
+
+  @Prop({ type: [OptionSchema], required: false })
+  true_false_options?: Option[];
 }
 
 export const ExerciseSchema = SchemaFactory.createForClass(Exercise);
-
-@Schema({ collection: 'multiple_choice_exercises' })
-export class MultipleChoiceExercise extends Exercise {
-  @Prop({ type: [String], required: true })
-  options: string[];
-}
-
-export const MultipleChoiceExerciseSchema = SchemaFactory.createForClass(
-  MultipleChoiceExercise,
-);
-
-@Schema({ collection: 'option_exercises' })
-export class Option {
-  @Prop({ required: true })
-  statement: string;
-
-  @Prop({ required: true })
-  answer: boolean;
-}
-
-export const OptionSchema = SchemaFactory.createForClass(Option);
-
-@Schema({ collection: 'true_false_exercises' })
-export class TrueFalseExercise extends Exercise {
-  @Prop({ type: [OptionSchema], default: [] })
-  options: Option[];
-}
-
-export const TrueFalseExerciseSchema =
-  SchemaFactory.createForClass(TrueFalseExercise);

@@ -2,15 +2,17 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 import { Document } from 'mongoose';
 
+export enum LessonType {
+  READING = 'reading',
+  SCHOOL_WORK = 'school_work',
+}
+
 @Schema({ timestamps: true })
 export class Lesson extends Document {
   @Prop({ required: true })
   teacher_id: string;
 
-  @Prop({ required: true })
-  lesson_plan_id: string;
-
-  @Prop({ required: true })
+  @Prop({ required: true, enum: LessonType })
   type: string;
 
   @Prop({ required: true })

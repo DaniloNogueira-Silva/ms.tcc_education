@@ -10,11 +10,7 @@ import { UserProgressService } from '../user_progress/user_progress.service';
 import { CreateUserProgressDto } from '../user_progress/dto/create-user_progress.dto';
 import { User } from 'src/user/user.schema';
 import { Lesson } from 'src/lessons/lesson.schema';
-import {
-  Exercise,
-  MultipleChoiceExercise,
-  TrueFalseExercise,
-} from 'src/exercise/exercise.schema';
+import { Exercise } from 'src/exercise/exercise.schema';
 import { ExerciseList } from 'src/exercise_list/exercise_list.schema';
 
 @Injectable()
@@ -39,12 +35,6 @@ export class LessonPlanService {
 
     @InjectModel(ExerciseList.name)
     private exerciseListModel: Model<ExerciseList>,
-
-    @InjectModel(MultipleChoiceExercise.name)
-    private multipleChoiceExerciseModel: Model<MultipleChoiceExercise>,
-
-    @InjectModel(TrueFalseExercise.name)
-    private trueFalseExerciseModel: Model<TrueFalseExercise>,
   ) {}
 
   async create(
@@ -86,7 +76,6 @@ export class LessonPlanService {
     const userRole = userPayload.role;
 
     if (userRole === 'TEACHER') {
-
       const lessonplans = await this.lessonplanModel
         .find({ teacher_id: userPayload.id })
         .exec();
@@ -137,18 +126,6 @@ export class LessonPlanService {
           .find({ lesson_plan_id: lessonplan._id })
           .exec();
 
-        const multipleChoiceExercise = await this.multipleChoiceExerciseModel
-          .find({ lesson_plan_id: lessonplan._id })
-          .exec();
-
-        const multipleChoiceExerciseTotal = multipleChoiceExercise.length;
-
-        const trueFalseExercise = await this.trueFalseExerciseModel
-          .find({ lesson_plan_id: lessonplan._id })
-          .exec();
-
-        const trueFalseExerciseTotal = trueFalseExercise.length;
-
         const exerciseTotal = exercise.length;
 
         const exerciseList = await this.exerciseListModel
@@ -157,12 +134,7 @@ export class LessonPlanService {
 
         const exerciseListTotal = exerciseList.length;
 
-        const total =
-          lessonTotal +
-          exerciseTotal +
-          exerciseListTotal +
-          multipleChoiceExerciseTotal +
-          trueFalseExerciseTotal;
+        const total = lessonTotal + exerciseTotal + exerciseListTotal;
 
         const lessonsCompleted = userProgress.map(
           (p) => p.lesson_plan_id === lessonplan._id,

@@ -8,6 +8,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from './user/user.module';
 import { UserProgressModule } from './user_progress/user_progress.module';
+import { LessonPlanContentModule } from './lesson_plan_content/lesson_plan_content.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { UserProgressModule } from './user_progress/user_progress.module';
     ExerciseModule,
     UserProgressModule,
     ExerciseListModule,
+    LessonPlanContentModule,
   ],
   controllers: [],
   providers: [],

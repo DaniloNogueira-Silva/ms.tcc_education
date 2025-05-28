@@ -13,10 +13,6 @@ export class CreateLessonDto {
 
   @IsNotEmpty()
   @IsString()
-  lesson_plan_id: string;
-
-  @IsNotEmpty()
-  @IsString()
   name: string;
 
   @IsNotEmpty()

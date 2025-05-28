@@ -1,11 +1,4 @@
-import {
-  Exercise,
-  ExerciseSchema,
-  MultipleChoiceExercise,
-  MultipleChoiceExerciseSchema,
-  TrueFalseExercise,
-  TrueFalseExerciseSchema,
-} from 'src/exercise/exercise.schema';
+import { Exercise, ExerciseSchema } from 'src/exercise/exercise.schema';
 import {
   ExerciseList,
   ExerciseListSchema,
@@ -34,11 +27,6 @@ import { UserValidator } from '../utils/user.validator';
       { name: Lesson.name, schema: LessonSchema },
       { name: Exercise.name, schema: ExerciseSchema },
       { name: ExerciseList.name, schema: ExerciseListSchema },
-      {
-        name: MultipleChoiceExercise.name,
-        schema: MultipleChoiceExerciseSchema,
-      },
-      { name: TrueFalseExercise.name, schema: TrueFalseExerciseSchema },
     ]),
     UserProgressModule,
   ],
