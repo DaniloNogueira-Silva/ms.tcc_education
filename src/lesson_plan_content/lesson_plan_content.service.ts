@@ -45,6 +45,25 @@ export class LessonPlanContentService {
     return this.lessonPlanContentModel.find().exec();
   }
 
+  async findOneByContent(
+    content_id: string,
+    content_type: string,
+  ): Promise<LessonPlanContent | null> {
+    return this.lessonPlanContentModel
+      .findOne({
+        content_id,
+        content_type,
+      })
+      .exec();
+  }
+
+  async getContentIdsByLessonPlan(lesson_plan_id: string): Promise<string[]> {
+    const contents = await this.lessonPlanContentModel
+      .find({ lesson_plan_id })
+      .exec();
+    return contents.map((c) => c.content_id);
+  }
+
   async getContentsByLessonPlan(
     lessonPlanId: string,
   ): Promise<LessonPlanContent[]> {

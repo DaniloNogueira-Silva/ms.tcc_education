@@ -6,11 +6,13 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserProgressModule } from '../user_progress/user_progress.module';
 import { UserValidator } from '../utils/user.validator';
+import { LessonPlanContentModule } from 'src/lesson_plan_content/lesson_plan_content.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Lesson.name, schema: LessonSchema }]),
     UserProgressModule,
+    LessonPlanContentModule,
   ],
   controllers: [LessonController],
   providers: [LessonService, UserValidator],

@@ -1,4 +1,5 @@
 import {
+  IsArray,
   IsDate,
   IsNotEmpty,
   IsNumber,
@@ -33,4 +34,9 @@ export class CreateLessonDto {
 
   @IsNotEmpty()
   type: string;
+
+  @IsArray()
+  @IsString({ each: true })
+  @IsOptional()
+  lesson_plan_ids?: string[];
 }

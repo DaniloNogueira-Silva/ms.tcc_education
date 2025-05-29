@@ -14,7 +14,6 @@ import { CreateUserProgressDto } from '../user_progress/dto/create-user_progress
 import { UserProgressService } from '../user_progress/user_progress.service';
 import { UpdateUserProgressDto } from '../user_progress/dto/update-user_progress.dto';
 import axios from 'axios';
-import { LessonPlanContent } from 'src/lesson_plan_content/lesson_plan_content.schema';
 import { LessonPlanContentService } from 'src/lesson_plan_content/lesson_plan_content.service';
 
 @Injectable()
@@ -24,9 +23,6 @@ export class ExerciseService {
     private exerciseModel: Model<Exercise>,
 
     private readonly lessonPlanContentService: LessonPlanContentService,
-
-    @InjectModel(LessonPlanContent.name)
-    private lessonPlanContentModel: Model<LessonPlanContent>,
 
     private readonly userProgressService: UserProgressService,
   ) {}
@@ -39,9 +35,9 @@ export class ExerciseService {
 
     if (lesson_plan_ids && lesson_plan_ids.length > 0) {
       await Promise.all(
-        lesson_plan_ids.map((planId) =>
+        lesson_plan_ids.map((lesson_plan_id) =>
           this.lessonPlanContentService.create({
-            lesson_plan_id: planId,
+            lesson_plan_id,
             content_id: String(savedExercise._id),
             content_type: 'exercise',
           }),
@@ -58,19 +54,18 @@ export class ExerciseService {
     return exercises;
   }
 
-  async findAllByLessonPlan(planId: string) {
-    const contentAssignments = await this.lessonPlanContentModel
-      .find({
-        lesson_plan_id: planId,
-      })
-      .exec();
+  async findAllByLessonPlan(lesson_plan_id: string) {
+    const contentIds =
+      await this.lessonPlanContentService.getContentIdsByLessonPlan(
+        lesson_plan_id,
+      );
 
-    const exerciseIds = contentAssignments.map((content) => content.content_id);
+    if (contentIds.length === 0) {
+      return [];
+    }
 
     const exercises = await this.exerciseModel
-      .find({
-        _id: { $in: exerciseIds },
-      })
+      .find({ _id: { $in: contentIds } })
       .exec();
 
     return exercises;
@@ -145,11 +140,14 @@ export class ExerciseService {
       throw new NotFoundException('Exercício não encontrado');
     }
 
-    const contentAssignment = await this.lessonPlanContentModel.findOne({
-      content_id: exercise.id,
-      content_type: 'exercise',
-    });
+    console.log(exercise.id);
+    const contentAssignment =
+      await this.lessonPlanContentService.findOneByContent(
+        exercise.id,
+        'exercise',
+      );
 
+    console.log('Content: ', contentAssignment);
     if (!contentAssignment) {
       throw new NotFoundException(
         'Associação do exercício com plano de aula não encontrada',
