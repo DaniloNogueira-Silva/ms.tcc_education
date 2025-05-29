@@ -52,6 +52,20 @@ export class LessonPlanContentController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Get('associations')
+  async getAssociationsByContent(
+    @Req() req,
+    @Query('content_id') content_id: string,
+    @Query('content_type') content_type: string,
+  ) {
+    await this.userValidator.validateAccess(req.user);
+    return this.lessonPlanContentService.getAssociationsByContent(
+      content_id,
+      content_type,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Get('exists')
   async checkExists(
     @Req() req,

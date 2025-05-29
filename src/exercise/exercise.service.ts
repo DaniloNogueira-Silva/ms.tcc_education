@@ -105,6 +105,49 @@ export class ExerciseService {
     return foundExercise.save();
   }
 
+  async updateExerciseAndLessonPlans(
+    exerciseId: string,
+    updateExerciseDto: UpdateExerciseDto,
+  ) {
+    const { lesson_plan_ids, ...exerciseData } = updateExerciseDto;
+    const updatedExercise = await this.update(exerciseId, exerciseData);
+
+    if (!lesson_plan_ids) {
+      return updatedExercise;
+    }
+    const currentAssociations =
+      await this.lessonPlanContentService.getAssociationsByContent(
+        exerciseId,
+        'exercise',
+      );
+
+    const currentPlanIds = currentAssociations.map((a) => a.lesson_plan_id);
+
+    const toRemove = currentAssociations.filter(
+      (a) => !lesson_plan_ids.includes(a.lesson_plan_id),
+    );
+
+    const toAdd = lesson_plan_ids.filter((id) => !currentPlanIds.includes(id));
+
+    await Promise.all(
+      toRemove.map((assoc) =>
+        this.lessonPlanContentService.remove(String(assoc._id)),
+      ),
+    );
+
+    await Promise.all(
+      toAdd.map((id) =>
+        this.lessonPlanContentService.create({
+          lesson_plan_id: id,
+          content_id: exerciseId,
+          content_type: 'exercise',
+        }),
+      ),
+    );
+
+    return updatedExercise;
+  }
+
   async remove(id: string): Promise<void> {
     const exercise = await this.exerciseModel.findById(id).exec();
 
@@ -140,14 +183,12 @@ export class ExerciseService {
       throw new NotFoundException('Exercício não encontrado');
     }
 
-    console.log(exercise.id);
     const contentAssignment =
       await this.lessonPlanContentService.findOneByContent(
         exercise.id,
         'exercise',
       );
 
-    console.log('Content: ', contentAssignment);
     if (!contentAssignment) {
       throw new NotFoundException(
         'Associação do exercício com plano de aula não encontrada',

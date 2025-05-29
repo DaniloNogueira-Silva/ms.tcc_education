@@ -8,6 +8,7 @@ import { Model } from 'mongoose';
 
 import { LessonPlanContent } from './lesson_plan_content.schema';
 import { CreateLessonPlanContentDto } from './dto/create-lesson_plan_content.dto';
+import { UpdateLessonPlanContentDto } from './dto/update-lesson_plan_content.dto';
 
 @Injectable()
 export class LessonPlanContentService {
@@ -72,6 +73,18 @@ export class LessonPlanContentService {
       .exec();
   }
 
+  async getAssociationsByContent(
+    content_id: string,
+    content_type: string,
+  ): Promise<LessonPlanContent[]> {
+    return this.lessonPlanContentModel
+      .find({
+        content_id,
+        content_type,
+      })
+      .exec();
+  }
+
   async checkIfContentExistsInPlan(
     lessonPlanId: string,
     contentId: string,
@@ -86,10 +99,26 @@ export class LessonPlanContentService {
     return !!exists;
   }
 
-  async remove(lessonPlanContentId: string): Promise<void> {
-    const result = await this.lessonPlanContentModel.findOneAndDelete({
-      id: lessonPlanContentId,
-    });
+  async update(
+    id: string,
+    updateLessonPlanContentDto: UpdateLessonPlanContentDto,
+  ): Promise<LessonPlanContent> {
+    const updatedLessonPlanContent =
+      await this.lessonPlanContentModel.findByIdAndUpdate(
+        id,
+        updateLessonPlanContentDto,
+        { new: true },
+      );
+
+    if (!updatedLessonPlanContent) {
+      throw new NotFoundException('Associação não encontrada para atualização');
+    }
+
+    return updatedLessonPlanContent;
+  }
+
+  async remove(id: string): Promise<void> {
+    const result = await this.lessonPlanContentModel.findByIdAndDelete(id);
 
     if (!result) {
       throw new NotFoundException('Associação não encontrada para remoção');

@@ -57,13 +57,16 @@ export class ExerciseController {
 
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  async update(
+  async updateExerciseAndLessonPlans(
     @Param('id') id: string,
     @Body() updateExerciseDto: UpdateExerciseDto,
     @Req() req,
   ) {
     await this.userValidator.validateAccess(req.user);
-    return await this.exerciseService.update(id, updateExerciseDto);
+    return await this.exerciseService.updateExerciseAndLessonPlans(
+      id,
+      updateExerciseDto,
+    );
   }
 
   @UseGuards(JwtAuthGuard)
