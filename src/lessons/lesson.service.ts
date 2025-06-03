@@ -77,6 +77,49 @@ export class LessonService {
     });
   }
 
+  async updateLessonAndLessonPlans(
+    lessonId: string,
+    updateLessonDto: UpdateLessonDto,
+  ) {
+    const { lesson_plan_ids, ...lessonData } = updateLessonDto;
+    const updatedLesson = await this.update(lessonId, lessonData);
+
+    if (!lesson_plan_ids) {
+      return updatedLesson;
+    }
+    const currentAssociations =
+      await this.lessonPlanContentService.getAssociationsByContent(
+        lessonId,
+        'exercise',
+      );
+
+    const currentPlanIds = currentAssociations.map((a) => a.lesson_plan_id);
+
+    const toRemove = currentAssociations.filter(
+      (a) => !lesson_plan_ids.includes(a.lesson_plan_id),
+    );
+
+    const toAdd = lesson_plan_ids.filter((id) => !currentPlanIds.includes(id));
+
+    await Promise.all(
+      toRemove.map((assoc) =>
+        this.lessonPlanContentService.remove(String(assoc._id)),
+      ),
+    );
+
+    await Promise.all(
+      toAdd.map((id) =>
+        this.lessonPlanContentService.create({
+          lesson_plan_id: id,
+          content_id: lessonId,
+          content_type: 'lesson',
+        }),
+      ),
+    );
+
+    return updatedLesson;
+  }
+
   async remove(id: string): Promise<void> {
     await this.lessonModel.findByIdAndDelete(id);
   }

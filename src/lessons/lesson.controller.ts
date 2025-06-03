@@ -56,13 +56,16 @@ export class LessonController {
 
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  async update(
+  async updateExerciseAndLessonPlans(
     @Param('id') id: string,
     @Body() updateLessonDto: UpdateLessonDto,
     @Req() req,
   ) {
     await this.userValidator.validateAccess(req.user);
-    return await this.lessonService.update(id, updateLessonDto);
+    return await this.lessonService.updateLessonAndLessonPlans(
+      id,
+      updateLessonDto,
+    );
   }
 
   @UseGuards(JwtAuthGuard)
