@@ -149,6 +149,10 @@ export class ExerciseService {
   }
 
   async remove(id: string): Promise<void> {
+    await this.lessonPlanContentService.removeAllAssociationsByContentId(
+      id,
+      'exercise',
+    );
     const exercise = await this.exerciseModel.findById(id).exec();
 
     if (!exercise) {

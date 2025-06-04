@@ -45,10 +45,10 @@ export class LessonService {
     return this.lessonModel.find().exec();
   }
 
-  async findAllByLessonPlan(lesson_plan_id: string): Promise<Lesson[]> {
+  async findAllByLessonPlan(lesson_plan_ids: string): Promise<Lesson[]> {
     const contentIds =
       await this.lessonPlanContentService.getContentIdsByLessonPlan(
-        lesson_plan_id,
+        lesson_plan_ids,
       );
 
     if (contentIds.length === 0) {
@@ -90,7 +90,7 @@ export class LessonService {
     const currentAssociations =
       await this.lessonPlanContentService.getAssociationsByContent(
         lessonId,
-        'exercise',
+        'lesson',
       );
 
     const currentPlanIds = currentAssociations.map((a) => a.lesson_plan_id);
@@ -121,7 +121,16 @@ export class LessonService {
   }
 
   async remove(id: string): Promise<void> {
-    await this.lessonModel.findByIdAndDelete(id);
+    await this.lessonPlanContentService.removeAllAssociationsByContentId(
+      id,
+      'lesson',
+    );
+
+    const lessons = await this.lessonModel.findByIdAndDelete(id);
+
+    if (!lessons) {
+      throw new NotFoundException('Aula não encontrado para remoção');
+    }
   }
 
   async getByUserRole(userPayload: UserPayload): Promise<any> {

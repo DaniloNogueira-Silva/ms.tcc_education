@@ -124,4 +124,18 @@ export class LessonPlanContentService {
       throw new NotFoundException('Associação não encontrada para remoção');
     }
   }
+
+  async removeAllAssociationsByContentId(
+    content_id: string,
+    content_type: string,
+  ): Promise<void> {
+    const result = await this.lessonPlanContentModel.deleteMany({
+      content_id,
+      content_type,
+    });
+
+    if (result.deletedCount === 0) {
+      throw new NotFoundException('Nenhuma associação encontrada para remoção');
+    }
+  }
 }
