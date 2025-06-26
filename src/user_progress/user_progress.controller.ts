@@ -49,6 +49,17 @@ export class UserProgressController {
     );
   }
 
+  @Get('lesson_plan/:lesson_plan_id')
+  async findAllStudentsByLessonPlanId(
+    @Param('lesson_plan_id') lesson_plan_id: string,
+    @Req() req,
+  ) {
+    await this.userValidator.validateAccess(req.user);
+    return await this.userProgressService.findAllStudentsByLessonPlanId(
+      lesson_plan_id,
+    );
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: string, @Req() req) {
     await this.userValidator.validateAccess(req.user);

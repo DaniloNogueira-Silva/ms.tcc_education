@@ -24,9 +24,10 @@ export class CreateLessonDto {
   @IsOptional()
   due_date: Date;
 
-  @IsString()
+  @IsArray()
+  @IsString({ each: true })
   @IsOptional()
-  links: string[];
+  links?: string[];
 
   @IsNumber()
   @IsOptional()

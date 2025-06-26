@@ -39,6 +39,13 @@ export class UserProgressService {
       .exec();
   }
 
+  async findAllStudentsByLessonPlanId(lesson_plan_id: string): Promise<number> {
+    const uniqueUserIds = await this.userProgressModel.distinct('user_id', {
+      lesson_plan_id,
+    });
+    return uniqueUserIds.length;
+  }
+
   async findOne(id: string): Promise<UserProgress> {
     const userProgress = await this.userProgressModel.findById(id);
     if (!userProgress)

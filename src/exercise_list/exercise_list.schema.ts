@@ -25,6 +25,9 @@ export class ExerciseList extends Document {
   @Prop({ required: false })
   points: number;
 
+  @Prop({ type: [String], required: false })
+  links?: string[];
+
   @Prop({ required: true })
   type: string; //  TEST or LIST
 }

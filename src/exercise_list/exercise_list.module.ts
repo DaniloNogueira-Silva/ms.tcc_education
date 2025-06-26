@@ -5,8 +5,8 @@ import { ExerciseListService } from './exercise_list.service';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserProgressModule } from '../user_progress/user_progress.module';
-import { UserProgressService } from '../user_progress/user_progress.service';
 import { UserValidator } from '../utils/user.validator';
+import { FilesModule } from '../files/files.module';
 
 @Module({
   imports: [
@@ -14,6 +14,7 @@ import { UserValidator } from '../utils/user.validator';
       { name: ExerciseList.name, schema: ExerciseListSchema },
     ]),
     UserProgressModule,
+    FilesModule,
   ],
   controllers: [ExerciseListController],
   providers: [ExerciseListService, UserValidator],

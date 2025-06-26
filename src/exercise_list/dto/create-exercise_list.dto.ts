@@ -1,10 +1,10 @@
 import {
-    IsArray,
-    IsDate,
-    IsNotEmpty,
-    IsNumber,
-    IsOptional,
-    IsString,
+  IsArray,
+  IsDate,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
 } from 'class-validator';
 
 export class CreateExerciseListDto {
@@ -35,6 +35,11 @@ export class CreateExerciseListDto {
   @IsNumber()
   @IsOptional()
   points: number;
+
+  @IsArray()
+  @IsString({ each: true })
+  @IsOptional()
+  links?: string[];
 
   @IsNotEmpty()
   type: string;

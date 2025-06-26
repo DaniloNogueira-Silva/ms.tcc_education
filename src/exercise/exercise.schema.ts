@@ -45,6 +45,9 @@ export class Exercise extends Document {
   grade: number;
 
   @Prop({ type: [String], required: false })
+  links?: string[];
+
+  @Prop({ type: [String], required: false })
   multiple_choice_options?: string[];
 
   @Prop({ type: [OptionSchema], required: false })
