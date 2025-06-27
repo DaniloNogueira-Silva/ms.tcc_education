@@ -7,7 +7,7 @@ export class UserProgress extends Document {
   @Prop({ required: true, ref: 'User' })
   user_id: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, ref: 'lesson_plan' })
   lesson_plan_id: string;
 
   @Prop({ required: false })

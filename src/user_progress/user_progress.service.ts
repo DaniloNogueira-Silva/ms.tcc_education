@@ -39,11 +39,11 @@ export class UserProgressService {
       .exec();
   }
 
-  async findAllStudentsByLessonPlanId(lesson_plan_id: string): Promise<number> {
-    const uniqueUserIds = await this.userProgressModel.distinct('user_id', {
+  async findAllStudentsByLessonPlanId(lesson_plan_id: string): Promise<User[]> {
+    const userIds = await this.userProgressModel.distinct('user_id', {
       lesson_plan_id,
     });
-    return uniqueUserIds.length;
+    return this.userModel.find({ _id: { $in: userIds } }, { name: 1 }).exec();
   }
 
   async findOne(id: string): Promise<UserProgress> {
@@ -95,6 +95,17 @@ export class UserProgressService {
     if (!userProgress)
       throw new NotFoundException('Progress do usuário não encontrado');
     return userProgress;
+  }
+
+  async hasCompletedExercise(
+    external_id: string,
+    user_id: string,
+  ): Promise<boolean> {
+    const result = await this.userProgressModel
+      .findOne({ external_id, user_id })
+      .exec();
+
+    return !!result;
   }
 
   async findByLessonPlanAndType(

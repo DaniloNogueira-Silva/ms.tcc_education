@@ -68,6 +68,19 @@ export class ExerciseController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Get(':exercise_id/completed')
+  async isCompleted(@Param('exercise_id') exercise_id: string, @Req() req) {
+    await this.userValidator.validateAccess(req.user);
+    const completed = await this.exerciseService.isCompletedByUser(
+      exercise_id,
+      req.user.id,
+    );
+    const deadlinePassed =
+      await this.exerciseService.isDeadlinePassed(exercise_id);
+    return { completed, deadlinePassed };
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   async findOne(@Param('id') id: string, @Req() req) {
     await this.userValidator.validateAccess(req.user);

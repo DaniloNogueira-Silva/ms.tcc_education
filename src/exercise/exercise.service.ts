@@ -250,4 +250,27 @@ export class ExerciseService {
       points: data.points,
     };
   }
+
+  async isCompletedByUser(
+    exercise_id: string,
+    userId: string,
+  ): Promise<boolean> {
+    return this.userProgressService.hasCompletedExercise(exercise_id, userId);
+  }
+
+  async isDeadlinePassed(exercise_id: string): Promise<boolean> {
+    const exercise = await this.exerciseModel
+      .findById(exercise_id, { due_date: 1 })
+      .exec();
+
+    if (!exercise) {
+      throw new NotFoundException('Exercício não encontrado');
+    }
+
+    if (!exercise.due_date) {
+      return false;
+    }
+
+    return new Date(exercise.due_date).getTime() < Date.now();
+  }
 }

@@ -135,7 +135,7 @@ export class LessonPlanContentService {
     });
 
     if (result.deletedCount === 0) {
-      throw new NotFoundException('Nenhuma associação encontrada para remoção');
+      return;
     }
   }
 }
