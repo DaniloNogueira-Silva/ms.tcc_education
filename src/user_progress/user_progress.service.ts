@@ -1,11 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { UpdateUserProgressDto } from './dto/update-user_progress.dto';
 import { CreateUserProgressDto } from './dto/create-user_progress.dto';
 import { UserPayload } from '../auth/auth.service';
 import { UserProgress } from '../user_progress/user_progress.schema';
 import { User } from 'src/user/user.schema';
+import { UserRankingInfo } from './interfaces/user-points.interface';
 
 @Injectable()
 export class UserProgressService {
@@ -126,5 +127,51 @@ export class UserProgressService {
       ...userProgress.toJSON(),
       user: users.find((user) => user.id === userProgress.user_id),
     }));
+  }
+
+  async findTotalPointsByUser(
+    lessonPlanId: string,
+  ): Promise<UserRankingInfo[]> {
+    const rankingData = await this.userProgressModel.aggregate([
+      {
+        $match: {
+          lesson_plan_id: lessonPlanId,
+        },
+      },
+      {
+        $group: {
+          _id: '$user_id',
+          totalPoints: { $sum: '$points' },
+        },
+      },
+      {
+        $addFields: {
+          userObjectId: { $toObjectId: '$_id' },
+        },
+      },
+      {
+        $sort: { totalPoints: -1 },
+      },
+      {
+        $lookup: {
+          from: 'user',
+          localField: 'userObjectId',
+          foreignField: '_id',
+          as: 'userInfo',
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          userId: '$_id',
+          totalPoints: '$totalPoints',
+          name: {
+            $ifNull: [{ $first: '$userInfo.name' }, 'Usuário Desconhecido'],
+          },
+        },
+      },
+    ]);
+
+    return rankingData;
   }
 }

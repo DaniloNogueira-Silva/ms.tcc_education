@@ -38,6 +38,13 @@ export class UserProgressController {
     return await this.userProgressService.getByUserRole(req.user);
   }
 
+  @Get('ranking/:lessonPlanId')
+  async findUserProgressByLessonPlanId(
+    @Param('lessonPlanId') lessonPlanId: string,
+  ) {
+    return await this.userProgressService.findTotalPointsByUser(lessonPlanId);
+  }
+
   @Get('exercise/:exerciseId')
   async findAllStudentsByExerciseId(
     @Param('exerciseId') exerciseId: string,
