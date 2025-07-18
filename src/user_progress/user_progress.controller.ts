@@ -56,6 +56,17 @@ export class UserProgressController {
     );
   }
 
+  @Get('exercise_list/:exercise_list_id')
+  async findAllStudentsByExerciseListId(
+    @Param('exercise_list_id') exercise_list_id: string,
+    @Req() req,
+  ) {
+    await this.userValidator.validateAccess(req.user);
+    return await this.userProgressService.findAllStudentsByExerciseListId(
+      exercise_list_id,
+    );
+  }
+
   @Get('lesson_plan/:lesson_plan_id')
   async findAllStudentsByLessonPlanId(
     @Param('lesson_plan_id') lesson_plan_id: string,

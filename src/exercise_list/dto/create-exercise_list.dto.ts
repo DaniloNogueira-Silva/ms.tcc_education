@@ -12,13 +12,14 @@ export class CreateExerciseListDto {
   @IsString()
   teacher_id: string;
 
-  @IsNotEmpty()
-  @IsString()
-  lesson_plan_id: string;
+  @IsArray()
+  @IsString({ each: true })
+  @IsOptional()
+  lesson_plan_ids?: string[];
 
   @IsArray()
   @IsString({ each: true })
-  exercises: string[];
+  exercises_ids: string[];
 
   @IsNotEmpty()
   @IsString()
@@ -26,15 +27,15 @@ export class CreateExerciseListDto {
 
   @IsNotEmpty()
   @IsString()
-  content: string;
+  content?: string;
 
   @IsDate()
   @IsOptional()
-  due_date: Date;
+  due_date?: Date;
 
   @IsNumber()
   @IsOptional()
-  points: number;
+  points?: number;
 
   @IsArray()
   @IsString({ each: true })
@@ -42,5 +43,6 @@ export class CreateExerciseListDto {
   links?: string[];
 
   @IsNotEmpty()
+  @IsString()
   type: string;
 }

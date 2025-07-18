@@ -20,10 +20,10 @@ import { UpdateExerciseListDto } from './dto/update-exercise_list.dto';
 import { FilesService } from '../files/files.service';
 
 @UseGuards(JwtAuthGuard)
-@Controller('exerciselists')
+@Controller('exercise_lists')
 export class ExerciseListController {
   constructor(
-    private readonly exerciselistService: ExerciseListService,
+    private readonly exerciseListService: ExerciseListService,
     private readonly userValidator: UserValidator,
     private readonly filesService: FilesService,
   ) {}
@@ -45,36 +45,66 @@ export class ExerciseListController {
       createExerciseListDto.links = createExerciseListDto.links || [];
       createExerciseListDto.links.push(`/files/${file.filename}`);
     }
-    return await this.exerciselistService.create(createExerciseListDto);
+    return await this.exerciseListService.create(createExerciseListDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get()
   async findAll(@Req() req) {
     await this.userValidator.validateAccess(req.user);
-    return await this.exerciselistService.getByUserRole(req.user);
+    return await this.exerciseListService.getByUserRole(req.user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':lessonPlanId/byLessonPlan')
+  async findAllByLessonPlan(
+    @Param('lessonPlanId') lessonPlanId: string,
+    @Req() req,
+  ) {
+    await this.userValidator.validateAccess(req.user);
+    return await this.exerciseListService.findAllByLessonPlan(lessonPlanId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':exercise_list_id/completed')
+  async isCompleted(
+    @Param('exercise_list_id') exercise_list_id: string,
+    @Req() req,
+  ) {
+    await this.userValidator.validateAccess(req.user);
+    const completed = await this.exerciseListService.isCompletedByUser(
+      exercise_list_id,
+      req.user.id,
+    );
+    const deadlinePassed =
+      await this.exerciseListService.isDeadlinePassed(exercise_list_id);
+    return { completed, deadlinePassed };
   }
 
   @Get(':id')
   async findOne(@Param('id') id: string, @Req() req) {
     await this.userValidator.validateAccess(req.user);
-    return await this.exerciselistService.findOne(id);
+    return await this.exerciseListService.findOne(id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  async update(
+  async updateExerciseListAndLessonPlans(
     @Param('id') id: string,
     @Body() updateExerciseListDto: UpdateExerciseListDto,
     @Req() req,
   ) {
     await this.userValidator.validateAccess(req.user);
-    return await this.exerciselistService.update(id, updateExerciseListDto);
+    return await this.exerciseListService.updateExerciseListAndLessonPlans(
+      id,
+      updateExerciseListDto,
+    );
   }
 
   @Delete(':id')
   async remove(@Param('id') id: string, @Req() req) {
     await this.userValidator.validateAccess(req.user);
-    return await this.exerciselistService.remove(id);
+    return await this.exerciseListService.remove(id);
   }
 
   @Post(':exerciselistId/mark-completed')
@@ -82,7 +112,7 @@ export class ExerciseListController {
     @Param('exerciselistId') exerciselistId: string,
     @Req() req,
   ) {
-    return this.exerciselistService.markExerciseListAsCompleted(
+    return this.exerciseListService.markExerciseListAsCompleted(
       req.user,
       exerciselistId,
     );

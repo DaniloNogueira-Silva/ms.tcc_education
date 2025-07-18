@@ -40,6 +40,15 @@ export class UserProgressService {
       .exec();
   }
 
+  async findAllStudentsByExerciseListId(
+    exercise_list_id: string,
+  ): Promise<UserProgress[]> {
+    return this.userProgressModel
+      .find({ external_id: exercise_list_id })
+      .populate('user_id', 'name')
+      .exec();
+  }
+
   async findAllStudentsByLessonPlanId(lesson_plan_id: string): Promise<User[]> {
     const userIds = await this.userProgressModel.distinct('user_id', {
       lesson_plan_id,

@@ -7,6 +7,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UserProgressModule } from '../user_progress/user_progress.module';
 import { UserValidator } from '../utils/user.validator';
 import { FilesModule } from '../files/files.module';
+import { LessonPlanContentModule } from 'src/lesson_plan_content/lesson_plan_content.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { FilesModule } from '../files/files.module';
       { name: ExerciseList.name, schema: ExerciseListSchema },
     ]),
     UserProgressModule,
+    LessonPlanContentModule,
     FilesModule,
   ],
   controllers: [ExerciseListController],

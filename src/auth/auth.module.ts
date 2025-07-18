@@ -11,13 +11,13 @@ import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(), // Carrega variáveis do .env
+    ConfigModule.forRoot(), 
     PassportModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        secret: configService.get<string>('JWT_SECRET'), // Obtém do .env
+        secret: configService.get<string>('JWT_SECRET'), 
       }),
     }),
     MongooseModule.forFeature([
