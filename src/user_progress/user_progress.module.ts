@@ -1,6 +1,9 @@
 import { User, UserSchema } from 'src/user/user.schema';
 import { UserProgress, UserProgressSchema } from './user_progress.schema';
-
+import {
+  ExerciseList,
+  ExerciseListSchema,
+} from 'src/exercise_list/exercise_list.schema';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserProgressController } from './user_progress.controller';
@@ -12,6 +15,7 @@ import { UserValidator } from '../utils/user.validator';
     MongooseModule.forFeature([
       { name: UserProgress.name, schema: UserProgressSchema },
       { name: User.name, schema: UserSchema },
+      { name: ExerciseList.name, schema: ExerciseListSchema },
     ]),
   ],
   controllers: [UserProgressController],

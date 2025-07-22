@@ -19,5 +19,6 @@ import { FilesModule } from '../files/files.module';
   ],
   controllers: [ExerciseController],
   providers: [ExerciseService, UserValidator],
+  exports: [ExerciseService],
 })
 export class ExerciseModule {}

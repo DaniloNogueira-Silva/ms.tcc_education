@@ -18,6 +18,7 @@ import { ExerciseListService } from './exercise_list.service';
 import { CreateExerciseListDto } from './dto/create-exercise_list.dto';
 import { UpdateExerciseListDto } from './dto/update-exercise_list.dto';
 import { FilesService } from '../files/files.service';
+import { CreateUserProgressDto } from 'src/user_progress/dto/create-user_progress.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('exercise_lists')
@@ -105,6 +106,21 @@ export class ExerciseListController {
   async remove(@Param('id') id: string, @Req() req) {
     await this.userValidator.validateAccess(req.user);
     return await this.exerciseListService.remove(id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':exerciseId/submitExerciseListAnswers')
+  async submitExerciseListAnswers(
+    @Param('exerciseId') exerciseId: string,
+    @Req() req,
+    @Body() createUserProgressDto: CreateUserProgressDto,
+  ) {
+    await this.userValidator.validateAccess(req.user);
+    return this.exerciseListService.submitExerciseListAnswers(
+      req.user,
+      exerciseId,
+      createUserProgressDto,
+    );
   }
 
   @Post(':exerciselistId/mark-completed')

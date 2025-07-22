@@ -8,6 +8,7 @@ import { UserProgressModule } from '../user_progress/user_progress.module';
 import { UserValidator } from '../utils/user.validator';
 import { FilesModule } from '../files/files.module';
 import { LessonPlanContentModule } from 'src/lesson_plan_content/lesson_plan_content.module';
+import { ExerciseModule } from 'src/exercise/exercise.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { LessonPlanContentModule } from 'src/lesson_plan_content/lesson_plan_con
     UserProgressModule,
     LessonPlanContentModule,
     FilesModule,
+    ExerciseModule,
   ],
   controllers: [ExerciseListController],
   providers: [ExerciseListService, UserValidator],

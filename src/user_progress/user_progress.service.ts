@@ -1,11 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { UpdateUserProgressDto } from './dto/update-user_progress.dto';
 import { CreateUserProgressDto } from './dto/create-user_progress.dto';
 import { UserPayload } from '../auth/auth.service';
 import { UserProgress } from '../user_progress/user_progress.schema';
 import { User } from 'src/user/user.schema';
+import { ExerciseList } from 'src/exercise_list/exercise_list.schema';
 import { UserRankingInfo } from './interfaces/user-points.interface';
 
 @Injectable()
@@ -16,6 +17,9 @@ export class UserProgressService {
 
     @InjectModel(User.name)
     private userModel: Model<User>,
+
+    @InjectModel(ExerciseList.name)
+    private exerciseListModel: Model<ExerciseList>,
   ) {}
 
   async create(
@@ -42,9 +46,43 @@ export class UserProgressService {
 
   async findAllStudentsByExerciseListId(
     exercise_list_id: string,
+  ): Promise<User[]> {
+    const exerciseList = await this.exerciseListModel
+      .findById(exercise_list_id, { exercises_ids: 1 })
+      .exec();
+
+    if (!exerciseList)
+      throw new NotFoundException('Lista de exercício não encontrada');
+
+    const ids = [
+      exercise_list_id,
+      ...exerciseList.exercises_ids.map((id) => id.toString()),
+    ];
+
+    const userIds = await this.userProgressModel.distinct('user_id', {
+      external_id: { $in: ids },
+    });
+
+    return this.userModel.find({ _id: { $in: userIds } }, { name: 1 }).exec();
+  }
+
+  async findStudentsAnswersByExerciseListId(
+    exercise_list_id: string,
   ): Promise<UserProgress[]> {
+    const exerciseList = await this.exerciseListModel
+      .findById(exercise_list_id, { exercises_ids: 1 })
+      .exec();
+
+    if (!exerciseList)
+      throw new NotFoundException('Lista de exercício não encontrada');
+
+    const ids = [
+      exercise_list_id,
+      ...exerciseList.exercises_ids.map((id) => id.toString()),
+    ];
+
     return this.userProgressModel
-      .find({ external_id: exercise_list_id })
+      .find({ external_id: { $in: ids }, type: 'EXERCISE_LIST' })
       .populate('user_id', 'name')
       .exec();
   }

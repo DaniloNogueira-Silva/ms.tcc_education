@@ -9,6 +9,7 @@ import { ExerciseList } from './exercise_list.schema';
 import { CreateExerciseListDto } from './dto/create-exercise_list.dto';
 import { UpdateExerciseListDto } from './dto/update-exercise_list.dto';
 import { LessonPlanContentService } from 'src/lesson_plan_content/lesson_plan_content.service';
+import { ExerciseService } from 'src/exercise/exercise.service';
 
 @Injectable()
 export class ExerciseListService {
@@ -19,6 +20,8 @@ export class ExerciseListService {
     private readonly lessonPlanContentService: LessonPlanContentService,
 
     private readonly userProgressService: UserProgressService,
+
+    private readonly exerciseService: ExerciseService,
   ) {}
 
   async create(
@@ -142,6 +145,47 @@ export class ExerciseListService {
 
       return exerciselists;
     }
+  }
+
+  async submitExerciseListAnswers(
+    userPayload: UserPayload,
+    exercise_id: string,
+    createUserProgressDto: CreateUserProgressDto,
+  ): Promise<CreateUserProgressDto> {
+    const exercise = await this.exerciseService.findOne(exercise_id);
+
+    if (!exercise) {
+      throw new NotFoundException('Exercício não encontrado');
+    }
+
+    const contentAssignment =
+      await this.lessonPlanContentService.findOneByContent(
+        exercise.id,
+        'exercise',
+      );
+
+    if (!contentAssignment) {
+      throw new NotFoundException(
+        'Associação do exercício com plano de aula não encontrada',
+      );
+    }
+
+    const createUserProgress: CreateUserProgressDto = {
+      user_id: userPayload.id,
+      lesson_plan_id: contentAssignment.lesson_plan_id,
+      answer: createUserProgressDto.answer,
+      external_id: exercise_id,
+      type: 'EXERCISE_LIST',
+    };
+
+    const userProgress =
+      await this.userProgressService.create(createUserProgress);
+
+    // await axios.post(
+    //   'http://localhost:3003/user-character/complete-activity',
+    //   userProgress,
+    // );
+    return userProgress;
   }
 
   async markExerciseListAsCompleted(
