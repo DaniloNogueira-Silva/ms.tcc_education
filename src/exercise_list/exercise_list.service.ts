@@ -5,11 +5,14 @@ import { ObjectId } from 'mongodb';
 import { UserPayload } from '../auth/auth.service';
 import { UserProgressService } from '../user_progress/user_progress.service';
 import { CreateUserProgressDto } from '../user_progress/dto/create-user_progress.dto';
+import { UserProgress } from '../user_progress/user_progress.schema';
 import { ExerciseList } from './exercise_list.schema';
 import { CreateExerciseListDto } from './dto/create-exercise_list.dto';
 import { UpdateExerciseListDto } from './dto/update-exercise_list.dto';
 import { LessonPlanContentService } from 'src/lesson_plan_content/lesson_plan_content.service';
 import { ExerciseService } from 'src/exercise/exercise.service';
+import { ExerciseListAttemptService } from '../exercise_list_attempt/exercise_list_attempt.service';
+import { ExerciseListAttempt } from '../exercise_list_attempt/exercise_list_attempt.schema';
 
 @Injectable()
 export class ExerciseListService {
@@ -22,6 +25,8 @@ export class ExerciseListService {
     private readonly userProgressService: UserProgressService,
 
     private readonly exerciseService: ExerciseService,
+
+    private readonly attemptService: ExerciseListAttemptService,
   ) {}
 
   async create(
@@ -149,19 +154,27 @@ export class ExerciseListService {
 
   async submitExerciseListAnswers(
     userPayload: UserPayload,
+    exercise_list_id: string,
     exercise_id: string,
     createUserProgressDto: CreateUserProgressDto,
-  ): Promise<CreateUserProgressDto> {
+  ): Promise<ExerciseListAttempt> {
     const exercise = await this.exerciseService.findOne(exercise_id);
 
     if (!exercise) {
       throw new NotFoundException('Exercício não encontrado');
     }
 
+    const exerciseList =
+      await this.exerciselistModel.findById(exercise_list_id);
+
+    if (!exerciseList) {
+      throw new NotFoundException('Lista de exercício não encontrada');
+    }
+
     const contentAssignment =
       await this.lessonPlanContentService.findOneByContent(
-        exercise.id,
-        'exercise',
+        exerciseList.id,
+        'exercise_list',
       );
 
     if (!contentAssignment) {
@@ -170,28 +183,41 @@ export class ExerciseListService {
       );
     }
 
-    const createUserProgress: CreateUserProgressDto = {
-      user_id: userPayload.id,
-      lesson_plan_id: contentAssignment.lesson_plan_id,
-      answer: createUserProgressDto.answer,
-      external_id: exercise_id,
-      type: 'EXERCISE_LIST',
-    };
+    let userProgress: UserProgress;
 
-    const userProgress =
-      await this.userProgressService.create(createUserProgress);
+    try {
+      userProgress = await this.userProgressService.findOneByExerciseAndUser(
+        exerciseList.id,
+        userPayload.id,
+      );
+    } catch (err) {
+      const createUserProgress: CreateUserProgressDto = {
+        user_id: userPayload.id,
+        lesson_plan_id: contentAssignment.lesson_plan_id,
+        external_id: exerciseList.id,
+        type: 'EXERCISE_LIST',
+      };
+
+      userProgress = await this.userProgressService.create(createUserProgress);
+    }
+
+    const attempt = await this.attemptService.create({
+      user_progress_id: userProgress.id,
+      exercise_id,
+      answer: createUserProgressDto.answer,
+    });
 
     // await axios.post(
     //   'http://localhost:3003/user-character/complete-activity',
     //   userProgress,
     // );
-    return userProgress;
+    return attempt;
   }
 
   async markExerciseListAsCompleted(
     userPayload: UserPayload,
     exercise_list_id: string,
-  ): Promise<CreateUserProgressDto> {
+  ): Promise<UserProgress> {
     const exerciselist =
       await this.exerciselistModel.findById(exercise_list_id);
 
@@ -209,16 +235,23 @@ export class ExerciseListService {
         'Associação do exercício com plano de aula não encontrada',
       );
     }
-    const createUserProgress: CreateUserProgressDto = {
-      user_id: userPayload.id,
-      lesson_plan_id: contentAssignment.lesson_plan_id,
-      external_id: exercise_list_id,
-      type: 'EXERCISE_LIST',
-      points: 100,
-    };
+    let userProgress: UserProgress;
+    try {
+      userProgress = await this.userProgressService.findOneByExerciseAndUser(
+        exercise_list_id,
+        userPayload.id,
+      );
+    } catch (err) {
+      const createUserProgress: CreateUserProgressDto = {
+        user_id: userPayload.id,
+        lesson_plan_id: contentAssignment.lesson_plan_id,
+        external_id: exercise_list_id,
+        type: 'EXERCISE_LIST',
+      };
+      userProgress = await this.userProgressService.create(createUserProgress);
+    }
 
-    const userProgress =
-      await this.userProgressService.create(createUserProgress);
+    await this.userProgressService.update(userProgress.id, { points: 100 });
 
     return userProgress;
   }

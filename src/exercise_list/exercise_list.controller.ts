@@ -10,6 +10,7 @@ import {
   Req,
   UseInterceptors,
   UploadedFile,
+  Query,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -109,16 +110,18 @@ export class ExerciseListController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post(':exerciseId/submitExerciseListAnswers')
+  @Post('submitExerciseListAnswers')
   async submitExerciseListAnswers(
-    @Param('exerciseId') exerciseId: string,
+    @Query('exercise_list_id') exercise_list_id: string,
+    @Query('exercise_id') exercise_id: string,
     @Req() req,
     @Body() createUserProgressDto: CreateUserProgressDto,
   ) {
     await this.userValidator.validateAccess(req.user);
     return this.exerciseListService.submitExerciseListAnswers(
       req.user,
-      exerciseId,
+      exercise_id,
+      exercise_list_id,
       createUserProgressDto,
     );
   }
