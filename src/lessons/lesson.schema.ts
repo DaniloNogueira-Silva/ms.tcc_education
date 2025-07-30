@@ -3,7 +3,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
 export enum LessonType {
-  READING = 'reading',
+  LESSON = 'lesson',
   SCHOOL_WORK = 'school_work',
 }
 
@@ -26,9 +26,6 @@ export class Lesson extends Document {
 
   @Prop({ required: false })
   links: string[];
-
-  @Prop({ required: false })
-  points: number;
 
   @Prop({ required: false })
   grade: number;

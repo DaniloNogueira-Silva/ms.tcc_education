@@ -9,11 +9,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 
-export enum ExerciseType {
-  MULTIPLE_CHOICE = 'multiple_choice',
-  OPEN = 'open',
-  TRUE_FALSE = 'true_false',
-}
+import { ExerciseType, ExerciseDifficulty } from '../exercise.schema';
 
 export class CreateExerciseDto {
   @IsString()
@@ -36,9 +32,8 @@ export class CreateExerciseDto {
   @IsOptional()
   due_date?: Date;
 
-  @IsNumber()
-  @IsOptional()
-  points?: number;
+  @IsEnum(ExerciseDifficulty)
+  dificulty?: ExerciseDifficulty;
 
   @IsNumber()
   @IsOptional()

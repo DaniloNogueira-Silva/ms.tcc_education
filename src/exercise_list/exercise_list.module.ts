@@ -2,7 +2,7 @@ import { ExerciseList, ExerciseListSchema } from './exercise_list.schema';
 
 import { ExerciseListController } from './exercise_list.controller';
 import { ExerciseListService } from './exercise_list.service';
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserProgressModule } from '../user_progress/user_progress.module';
 import { UserValidator } from '../utils/user.validator';
@@ -19,10 +19,11 @@ import { ExerciseListAttemptModule } from '../exercise_list_attempt/exercise_lis
     UserProgressModule,
     LessonPlanContentModule,
     FilesModule,
-    ExerciseModule,
+    forwardRef(() => ExerciseModule),
     ExerciseListAttemptModule,
   ],
   controllers: [ExerciseListController],
   providers: [ExerciseListService, UserValidator],
+  exports: [ExerciseListService],
 })
 export class ExerciseListModule {}

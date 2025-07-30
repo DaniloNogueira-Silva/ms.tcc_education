@@ -29,10 +29,6 @@ export class CreateLessonDto {
   @IsOptional()
   links?: string[];
 
-  @IsNumber()
-  @IsOptional()
-  points: number;
-
   @IsNotEmpty()
   type: string;
 

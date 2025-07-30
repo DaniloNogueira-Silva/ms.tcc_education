@@ -1,5 +1,7 @@
 import {
   BadRequestException,
+  forwardRef,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -7,6 +9,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
 import { Exercise } from './exercise.schema';
+import { calculateExerciseXp } from '../user_progress/xp.util';
 import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { UpdateExerciseDto } from './dto/update-exercise.dto';
 import { UserPayload } from '../auth/auth.service';
@@ -15,12 +18,16 @@ import { UserProgressService } from '../user_progress/user_progress.service';
 import { UpdateUserProgressDto } from '../user_progress/dto/update-user_progress.dto';
 import axios from 'axios';
 import { LessonPlanContentService } from 'src/lesson_plan_content/lesson_plan_content.service';
+import { ExerciseListService } from 'src/exercise_list/exercise_list.service';
 
 @Injectable()
 export class ExerciseService {
   constructor(
     @InjectModel(Exercise.name)
     private exerciseModel: Model<Exercise>,
+
+    @Inject(forwardRef(() => ExerciseListService))
+    private readonly exerciseListService: ExerciseListService,
 
     private readonly lessonPlanContentService: LessonPlanContentService,
 
@@ -149,15 +156,17 @@ export class ExerciseService {
   }
 
   async remove(id: string): Promise<void> {
+    const exercise = await this.exerciseModel.findById(id).exec();
+    if (!exercise) {
+      throw new NotFoundException('Exercício não encontrado');
+    }
+
     await this.lessonPlanContentService.removeAllAssociationsByContentId(
       id,
       'exercise',
     );
-    const exercise = await this.exerciseModel.findById(id).exec();
 
-    if (!exercise) {
-      throw new NotFoundException('Exercício não encontrado');
-    }
+    await this.exerciseListService.removeExerciseFromLists(id);
 
     await this.exerciseModel.findByIdAndDelete(id);
   }
@@ -224,6 +233,12 @@ export class ExerciseService {
       throw new BadRequestException('ID do aluno é obrigatório');
     }
 
+    const exercise = await this.exerciseModel.findById(exercise_id);
+
+    if (!exercise) {
+      throw new NotFoundException('Exercício não encontrado');
+    }
+
     const userProgress =
       await this.userProgressService.findOneByExerciseAndUser(
         exercise_id,
@@ -236,7 +251,7 @@ export class ExerciseService {
 
     const updateUserProgressDto: UpdateUserProgressDto = {
       final_grade: data.final_grade,
-      points: data.points,
+      points: calculateExerciseXp(exercise.difficulty),
     };
 
     await this.userProgressService.update(
@@ -247,7 +262,7 @@ export class ExerciseService {
     return {
       userProgressId: userProgress.id,
       grade: data.final_grade,
-      points: data.points,
+      points: calculateExerciseXp(exercise.difficulty),
     };
   }
 

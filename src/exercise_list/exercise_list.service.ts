@@ -1,7 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { ObjectId } from 'mongodb';
 import { UserPayload } from '../auth/auth.service';
 import { UserProgressService } from '../user_progress/user_progress.service';
 import { CreateUserProgressDto } from '../user_progress/dto/create-user_progress.dto';
@@ -13,6 +12,7 @@ import { LessonPlanContentService } from 'src/lesson_plan_content/lesson_plan_co
 import { ExerciseService } from 'src/exercise/exercise.service';
 import { ExerciseListAttemptService } from '../exercise_list_attempt/exercise_list_attempt.service';
 import { ExerciseListAttempt } from '../exercise_list_attempt/exercise_list_attempt.schema';
+import { calculateExerciseListXp } from '../user_progress/xp.util';
 
 @Injectable()
 export class ExerciseListService {
@@ -138,6 +138,13 @@ export class ExerciseListService {
     await this.exerciselistModel.findByIdAndDelete(id);
   }
 
+  async removeExerciseFromLists(exerciseId: string): Promise<void> {
+    await this.exerciselistModel.updateMany(
+      { exercises_ids: exerciseId },
+      { $pull: { exercises_ids: exerciseId } },
+    );
+  }
+
   async getByUserRole(userPayload: UserPayload): Promise<any> {
     const userRole = userPayload.role;
 
@@ -251,7 +258,15 @@ export class ExerciseListService {
       userProgress = await this.userProgressService.create(createUserProgress);
     }
 
-    await this.userProgressService.update(userProgress.id, { points: 100 });
+    const exercises = await Promise.all(
+      exerciselist.exercises_ids.map((id) =>
+        this.exerciseService.findOne(String(id)),
+      ),
+    );
+    const difficulties = exercises.map((e) => e.difficulty);
+    const xp = calculateExerciseListXp(difficulties);
+
+    await this.userProgressService.update(userProgress.id, { points: xp });
 
     return userProgress;
   }

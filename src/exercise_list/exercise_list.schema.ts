@@ -19,14 +19,11 @@ export class ExerciseList extends Document {
   @Prop({ required: false })
   due_date: Date;
 
-  @Prop({ required: false })
-  points: number;
-
   @Prop({ type: [String], required: false })
   links?: string[];
 
   @Prop({ required: true })
-  type: string; //  TEST or LIST
+  type: string;
 }
 
 export const ExerciseListSchema = SchemaFactory.createForClass(ExerciseList);

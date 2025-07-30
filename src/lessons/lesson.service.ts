@@ -7,6 +7,7 @@ import { CreateLessonDto } from './dto/create-lesson.dto';
 import { UserPayload } from '../auth/auth.service';
 import { UserProgressService } from '../user_progress/user_progress.service';
 import { CreateUserProgressDto } from '../user_progress/dto/create-user_progress.dto';
+import { calculateLessonXp } from '../user_progress/xp.util';
 import axios from 'axios';
 import { LessonPlanContentService } from 'src/lesson_plan_content/lesson_plan_content.service';
 
@@ -167,7 +168,7 @@ export class LessonService {
       lesson_plan_id: contentAssignment.lesson_plan_id,
       external_id: lesson_id,
       type: 'LESSON',
-      points: 100,
+      points: calculateLessonXp(lesson.type),
     };
 
     const userProgress = await this.userProgressService.create(

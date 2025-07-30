@@ -7,6 +7,12 @@ export enum ExerciseType {
   TRUE_FALSE = 'true_false',
 }
 
+export enum ExerciseDifficulty {
+  EASY = 'easy',
+  MEDIUM = 'medium',
+  HARD = 'hard',
+}
+
 @Schema()
 export class Option {
   @Prop({ required: true })
@@ -38,8 +44,8 @@ export class Exercise extends Document {
   @Prop({ required: false })
   due_date: Date;
 
-  @Prop({ required: false })
-  points: number;
+  @Prop({ required: true, enum: ExerciseDifficulty })
+  difficulty: ExerciseDifficulty;
 
   @Prop({ required: false })
   grade: number;
