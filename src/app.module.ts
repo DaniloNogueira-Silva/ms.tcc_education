@@ -10,6 +10,7 @@ import { UserModule } from './user/user.module';
 import { UserProgressModule } from './user_progress/user_progress.module';
 import { LessonPlanContentModule } from './lesson_plan_content/lesson_plan_content.module';
 import { FilesModule } from './files/files.module';
+import { SupabaseModule } from './supabase/supabase.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { FilesModule } from './files/files.module';
     ExerciseListModule,
     LessonPlanContentModule,
     FilesModule,
+    SupabaseModule
   ],
   controllers: [],
   providers: [],
