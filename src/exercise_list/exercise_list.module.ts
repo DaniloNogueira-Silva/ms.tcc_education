@@ -6,7 +6,6 @@ import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserProgressModule } from '../user_progress/user_progress.module';
 import { UserValidator } from '../utils/user.validator';
-import { FilesModule } from '../files/files.module';
 import { LessonPlanContentModule } from 'src/lesson_plan_content/lesson_plan_content.module';
 import { ExerciseModule } from 'src/exercise/exercise.module';
 import { ExerciseListAttemptModule } from '../exercise_list_attempt/exercise_list_attempt.module';
@@ -18,7 +17,6 @@ import { ExerciseListAttemptModule } from '../exercise_list_attempt/exercise_lis
     ]),
     UserProgressModule,
     LessonPlanContentModule,
-    FilesModule,
     forwardRef(() => ExerciseModule),
     ExerciseListAttemptModule,
   ],

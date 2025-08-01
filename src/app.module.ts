@@ -9,7 +9,6 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from './user/user.module';
 import { UserProgressModule } from './user_progress/user_progress.module';
 import { LessonPlanContentModule } from './lesson_plan_content/lesson_plan_content.module';
-import { FilesModule } from './files/files.module';
 import { SupabaseModule } from './supabase/supabase.module';
 
 @Module({
@@ -24,8 +23,7 @@ import { SupabaseModule } from './supabase/supabase.module';
     UserProgressModule,
     ExerciseListModule,
     LessonPlanContentModule,
-    FilesModule,
-    SupabaseModule
+    SupabaseModule,
   ],
   controllers: [],
   providers: [],

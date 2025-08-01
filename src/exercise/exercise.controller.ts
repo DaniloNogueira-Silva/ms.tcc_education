@@ -19,14 +19,12 @@ import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { UpdateExerciseDto } from './dto/update-exercise.dto';
 import { UpdateUserProgressDto } from 'src/user_progress/dto/update-user_progress.dto';
 import { CreateUserProgressDto } from 'src/user_progress/dto/create-user_progress.dto';
-import { FilesService } from '../files/files.service';
 
 @Controller('exercises')
 export class ExerciseController {
   constructor(
     private readonly exerciseService: ExerciseService,
     private readonly userValidator: UserValidator,
-    private readonly filesService: FilesService,
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -43,7 +41,6 @@ export class ExerciseController {
   ) {
     await this.userValidator.validateAccess(req.user);
     if (file) {
-      this.filesService.ensureUploadDir();
       createExerciseDto.links = createExerciseDto.links || [];
       createExerciseDto.links.push(`/files/${file.filename}`);
     }
