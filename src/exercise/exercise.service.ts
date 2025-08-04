@@ -8,7 +8,7 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
-import { Exercise } from './exercise.schema';
+import { Exercise, ExerciseDifficulty } from './exercise.schema';
 import { calculateExerciseXp } from '../user_progress/xp.util';
 import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { UpdateExerciseDto } from './dto/update-exercise.dto';
@@ -214,16 +214,21 @@ export class ExerciseService {
       answer: createUserProgressDto.answer,
       external_id: exercise_id,
       type: 'EXERCISE',
+      points: calculateExerciseXp(exercise.difficulty),
     };
 
     const userProgress =
       await this.userProgressService.create(createUserProgress);
 
-    // await axios.post(
-    //   'http://localhost:3003/user-character/complete-activity',
-    //   userProgress,
-    // );
-    return userProgress;
+    await axios.post(
+      'http://localhost:3003/user-character/complete-activity',
+      userProgress,
+    );
+
+    return {
+      ...userProgress,
+      points: calculateExerciseXp(exercise.difficulty),
+    };
   }
 
   async teacherCorrection(exercise_id: string, data: UpdateUserProgressDto) {

@@ -34,7 +34,7 @@ export class UserService {
     const createdUser = new this.userModel(createUserDto);
     const user = await createdUser.save();
 
-    await axios.post('http://localhost:3003/user-character/user-character', {
+    await axios.post('http://localhost:3003/user-character/', {
       user_id: user.id,
       name: user.name,
       level: 1,
@@ -42,6 +42,7 @@ export class UserService {
       rank: 'BRONZE',
       trophies: [],
       avatar_id: '',
+      coins: 0
     });
 
     return user;
