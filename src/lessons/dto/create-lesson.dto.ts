@@ -2,7 +2,6 @@ import {
   IsArray,
   IsDate,
   IsNotEmpty,
-  IsNumber,
   IsOptional,
   IsString,
 } from 'class-validator';
@@ -23,6 +22,11 @@ export class CreateLessonDto {
   @IsDate()
   @IsOptional()
   due_date: Date;
+
+  @IsArray()
+  @IsString({ each: true })
+  @IsOptional()
+  file?: string[];
 
   @IsArray()
   @IsString({ each: true })

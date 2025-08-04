@@ -25,6 +25,9 @@ export class Lesson extends Document {
   due_date: Date;
 
   @Prop({ required: false })
+  file: string[];
+
+  @Prop({ required: false })
   links: string[];
 
   @Prop({ required: false })

@@ -33,11 +33,6 @@ export class CreateExerciseListDto {
   @IsOptional()
   due_date?: Date;
 
-  @IsArray()
-  @IsString({ each: true })
-  @IsOptional()
-  links?: string[];
-
   @IsNotEmpty()
   @IsString()
   type: string;

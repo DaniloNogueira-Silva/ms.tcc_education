@@ -8,10 +8,7 @@ import {
   Delete,
   UseGuards,
   Req,
-  UseInterceptors,
-  UploadedFile,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ExerciseService } from './exercise.service';
 import { UserValidator } from '../utils/user.validator';
@@ -29,21 +26,8 @@ export class ExerciseController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  @UseInterceptors(
-    FileInterceptor('file', {
-      dest: './uploads',
-    }),
-  )
-  async create(
-    @Body() createExerciseDto: CreateExerciseDto,
-    @UploadedFile() file: Express.Multer.File,
-    @Req() req,
-  ) {
+  async create(@Body() createExerciseDto: CreateExerciseDto, @Req() req) {
     await this.userValidator.validateAccess(req.user);
-    if (file) {
-      createExerciseDto.links = createExerciseDto.links || [];
-      createExerciseDto.links.push(`/files/${file.filename}`);
-    }
     return await this.exerciseService.create(createExerciseDto);
   }
 

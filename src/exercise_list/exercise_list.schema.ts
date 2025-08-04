@@ -19,9 +19,6 @@ export class ExerciseList extends Document {
   @Prop({ required: false })
   due_date: Date;
 
-  @Prop({ type: [String], required: false })
-  links?: string[];
-
   @Prop({ required: true })
   type: string;
 }

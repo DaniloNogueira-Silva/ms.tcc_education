@@ -42,11 +42,6 @@ export class CreateExerciseDto {
   @IsArray()
   @IsString({ each: true })
   @IsOptional()
-  links?: string[];
-
-  @IsArray()
-  @IsString({ each: true })
-  @IsOptional()
   multiple_choice_options?: string[];
 
   @IsArray()
