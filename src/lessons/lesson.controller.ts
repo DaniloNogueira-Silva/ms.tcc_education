@@ -35,7 +35,6 @@ export class LessonController {
   )
   async create(
     @Body() createLessonDto: CreateLessonDto,
-    @UploadedFile() file: Express.Multer.File,
     @Req() req,
   ) {
     await this.userValidator.validateAccess(req.user);
