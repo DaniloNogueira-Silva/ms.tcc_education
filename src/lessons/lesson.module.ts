@@ -1,9 +1,9 @@
 import { Lesson, LessonSchema } from './lesson.schema';
 
 import { ConfigService } from '@nestjs/config';
-import { HttpRequest } from 'src/utils/http.request';
+import { HttpRequest } from '../utils/http.request';
 import { LessonController } from './lesson.controller';
-import { LessonPlanContentModule } from 'src/lesson_plan_content/lesson_plan_content.module';
+import { LessonPlanContentModule } from '../lesson_plan_content/lesson_plan_content.module';
 import { LessonService } from './lesson.service';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';

@@ -13,9 +13,9 @@ import { UserPayload } from '../auth/auth.service';
 import { UserProgressService } from '../user_progress/user_progress.service';
 import { CreateUserProgressDto } from '../user_progress/dto/create-user_progress.dto';
 import { calculateLessonXp } from '../user_progress/xp.util';
-import { LessonPlanContentService } from 'src/lesson_plan_content/lesson_plan_content.service';
-import { UserProgress } from 'src/user_progress/user_progress.schema';
-import { HttpRequest } from 'src/utils/http.request';
+import { LessonPlanContentService } from '../lesson_plan_content/lesson_plan_content.service';
+import { UserProgress } from '../user_progress/user_progress.schema';
+import { HttpRequest } from '../utils/http.request';
 
 @Injectable()
 export class LessonService {

@@ -12,9 +12,9 @@ import { User } from './user.schema';
 import { UserPayload } from '../auth/auth.service';
 import { LessonPlan } from '../lesson_plan/lesson_plan.schema';
 import { Exercise } from '../exercise/exercise.schema';
-import { UserProgress } from 'src/user_progress/user_progress.schema';
-import { Lesson } from 'src/lessons/lesson.schema';
-import { HttpRequest } from 'src/utils/http.request';
+import { UserProgress } from '../user_progress/user_progress.schema';
+import { Lesson } from '../lessons/lesson.schema';
+import { HttpRequest } from '../utils/http.request';
 
 @Injectable()
 export class UserService {

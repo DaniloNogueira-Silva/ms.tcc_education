@@ -13,10 +13,10 @@ import { UserPayload } from '../auth/auth.service';
 import { UserProgress } from '../user_progress/user_progress.schema';
 import { UserProgressService } from '../user_progress/user_progress.service';
 import { CreateUserProgressDto } from '../user_progress/dto/create-user_progress.dto';
-import { User } from 'src/user/user.schema';
-import { Lesson } from 'src/lessons/lesson.schema';
-import { Exercise } from 'src/exercise/exercise.schema';
-import { ExerciseList } from 'src/exercise_list/exercise_list.schema';
+import { User } from '../user/user.schema';
+import { Lesson } from '../lessons/lesson.schema';
+import { Exercise } from '../exercise/exercise.schema';
+import { ExerciseList } from '../exercise_list/exercise_list.schema';
 
 @Injectable()
 export class LessonPlanService {

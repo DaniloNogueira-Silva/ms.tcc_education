@@ -18,10 +18,10 @@ import { UserPayload } from '../auth/auth.service';
 import { CreateUserProgressDto } from '../user_progress/dto/create-user_progress.dto';
 import { UserProgressService } from '../user_progress/user_progress.service';
 import { UpdateUserProgressDto } from '../user_progress/dto/update-user_progress.dto';
-import { LessonPlanContentService } from 'src/lesson_plan_content/lesson_plan_content.service';
-import { ExerciseListService } from 'src/exercise_list/exercise_list.service';
-import { UserProgress } from 'src/user_progress/user_progress.schema';
-import { HttpRequest } from 'src/utils/http.request';
+import { LessonPlanContentService } from '../lesson_plan_content/lesson_plan_content.service';
+import { ExerciseListService } from '../exercise_list/exercise_list.service';
+import { UserProgress } from '../user_progress/user_progress.schema';
+import { HttpRequest } from '../utils/http.request';
 
 @Injectable()
 export class ExerciseService {

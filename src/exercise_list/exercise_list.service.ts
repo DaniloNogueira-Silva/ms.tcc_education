@@ -13,12 +13,12 @@ import { UserProgress } from '../user_progress/user_progress.schema';
 import { ExerciseList } from './exercise_list.schema';
 import { CreateExerciseListDto } from './dto/create-exercise_list.dto';
 import { UpdateExerciseListDto } from './dto/update-exercise_list.dto';
-import { LessonPlanContentService } from 'src/lesson_plan_content/lesson_plan_content.service';
-import { ExerciseService } from 'src/exercise/exercise.service';
+import { LessonPlanContentService } from '../lesson_plan_content/lesson_plan_content.service';
+import { ExerciseService } from '../exercise/exercise.service';
 import { ExerciseListAttemptService } from '../exercise_list_attempt/exercise_list_attempt.service';
 import { ExerciseListAttempt } from '../exercise_list_attempt/exercise_list_attempt.schema';
 import { calculateExerciseListXp } from '../user_progress/xp.util';
-import { HttpRequest } from 'src/utils/http.request';
+import { HttpRequest } from '../utils/http.request';
 
 @Injectable()
 export class ExerciseListService {

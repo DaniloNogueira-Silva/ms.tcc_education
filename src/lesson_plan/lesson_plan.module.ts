@@ -1,17 +1,17 @@
-import { Exercise, ExerciseSchema } from 'src/exercise/exercise.schema';
+import { Exercise, ExerciseSchema } from '../exercise/exercise.schema';
 import {
   ExerciseList,
   ExerciseListSchema,
-} from 'src/exercise_list/exercise_list.schema';
-import { Lesson, LessonSchema } from 'src/lessons/lesson.schema';
+} from '../exercise_list/exercise_list.schema';
+import { Lesson, LessonSchema } from '../lessons/lesson.schema';
 import { LessonPlan, LessonPlanSchema } from './lesson_plan.schema';
-import { User, UserSchema } from 'src/user/user.schema';
+import { User, UserSchema } from '../user/user.schema';
 import {
   UserProgress,
   UserProgressSchema,
 } from '../user_progress/user_progress.schema';
 
-import { HttpRequest } from 'src/utils/http.request';
+import { HttpRequest } from '../utils/http.request';
 import { LessonPlanController } from './lesson_plan.controller';
 import { LessonPlanService } from './lesson_plan.service';
 import { Module } from '@nestjs/common';

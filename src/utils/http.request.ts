@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 
 import { ConfigService } from '@nestjs/config';
-import { UserProgress } from 'src/user_progress/user_progress.schema';
+import { UserProgress } from '../user_progress/user_progress.schema';
 import axios from 'axios';
 
 interface CreateCharacterDto {

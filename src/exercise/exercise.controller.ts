@@ -14,8 +14,8 @@ import { ExerciseService } from './exercise.service';
 import { UserValidator } from '../utils/user.validator';
 import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { UpdateExerciseDto } from './dto/update-exercise.dto';
-import { UpdateUserProgressDto } from 'src/user_progress/dto/update-user_progress.dto';
-import { CreateUserProgressDto } from 'src/user_progress/dto/create-user_progress.dto';
+import { UpdateUserProgressDto } from '../user_progress/dto/update-user_progress.dto';
+import { CreateUserProgressDto } from '../user_progress/dto/create-user_progress.dto';
 
 @Controller('exercises')
 export class ExerciseController {

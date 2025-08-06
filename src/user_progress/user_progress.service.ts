@@ -10,7 +10,7 @@ import { UpdateUserProgressDto } from './dto/update-user_progress.dto';
 import { CreateUserProgressDto } from './dto/create-user_progress.dto';
 import { UserPayload } from '../auth/auth.service';
 import { UserProgress } from '../user_progress/user_progress.schema';
-import { User } from 'src/user/user.schema';
+import { User } from '../user/user.schema';
 import { UserRankingInfo } from './interfaces/user-points.interface';
 
 @Injectable()

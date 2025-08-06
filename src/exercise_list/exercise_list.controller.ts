@@ -15,7 +15,7 @@ import { UserValidator } from '../utils/user.validator';
 import { ExerciseListService } from './exercise_list.service';
 import { CreateExerciseListDto } from './dto/create-exercise_list.dto';
 import { UpdateExerciseListDto } from './dto/update-exercise_list.dto';
-import { CreateUserProgressDto } from 'src/user_progress/dto/create-user_progress.dto';
+import { CreateUserProgressDto } from '../user_progress/dto/create-user_progress.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('exercise_lists')

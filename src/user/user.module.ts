@@ -1,5 +1,5 @@
 import { Exercise, ExerciseSchema } from '../exercise/exercise.schema';
-import { Lesson, LessonSchema } from 'src/lessons/lesson.schema';
+import { Lesson, LessonSchema } from '../lessons/lesson.schema';
 import {
   LessonPlan,
   LessonPlanSchema,
@@ -8,10 +8,10 @@ import { User, UserSchema } from './user.schema';
 import {
   UserProgress,
   UserProgressSchema,
-} from 'src/user_progress/user_progress.schema';
+} from '../user_progress/user_progress.schema';
 
 import { ConfigService } from '@nestjs/config';
-import { HttpRequest } from 'src/utils/http.request';
+import { HttpRequest } from '../utils/http.request';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserController } from './user.controller';
