@@ -1,9 +1,11 @@
-import { User, UserSchema } from 'src/user/user.schema';
-import { UserProgress, UserProgressSchema } from './user_progress.schema';
 import {
   ExerciseList,
   ExerciseListSchema,
 } from 'src/exercise_list/exercise_list.schema';
+import { User, UserSchema } from 'src/user/user.schema';
+import { UserProgress, UserProgressSchema } from './user_progress.schema';
+
+import { HttpRequest } from 'src/utils/http.request';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserProgressController } from './user_progress.controller';

@@ -11,6 +11,7 @@ import {
   UserProgressSchema,
 } from '../user_progress/user_progress.schema';
 
+import { HttpRequest } from 'src/utils/http.request';
 import { LessonPlanController } from './lesson_plan.controller';
 import { LessonPlanService } from './lesson_plan.service';
 import { Module } from '@nestjs/common';

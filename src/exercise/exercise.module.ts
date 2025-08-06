@@ -1,12 +1,15 @@
 import { Exercise, ExerciseSchema } from './exercise.schema';
+import { Module, forwardRef } from '@nestjs/common';
+
+import { ConfigService } from '@nestjs/config';
 import { ExerciseController } from './exercise.controller';
+import { ExerciseListModule } from 'src/exercise_list/exercise_list.module';
 import { ExerciseService } from './exercise.service';
-import { forwardRef, Module } from '@nestjs/common';
+import { HttpRequest } from 'src/utils/http.request';
+import { LessonPlanContentModule } from 'src/lesson_plan_content/lesson_plan_content.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserProgressModule } from '../user_progress/user_progress.module';
 import { UserValidator } from '../utils/user.validator';
-import { LessonPlanContentModule } from 'src/lesson_plan_content/lesson_plan_content.module';
-import { ExerciseListModule } from 'src/exercise_list/exercise_list.module';
 
 @Module({
   imports: [
@@ -18,7 +21,7 @@ import { ExerciseListModule } from 'src/exercise_list/exercise_list.module';
     forwardRef(() => ExerciseListModule),
   ],
   controllers: [ExerciseController],
-  providers: [ExerciseService, UserValidator],
+  providers: [ExerciseService, UserValidator, HttpRequest, ConfigService],
   exports: [ExerciseService],
 })
 export class ExerciseModule {}

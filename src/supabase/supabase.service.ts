@@ -1,37 +1,74 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  OnModuleInit,
+} from '@nestjs/common';
+import { SupabaseClient, createClient } from '@supabase/supabase-js';
+
 import { ConfigService } from '@nestjs/config';
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 @Injectable()
-export class SupabaseService {
+export class SupabaseService implements OnModuleInit {
+  private readonly logger = new Logger(SupabaseService.name);
   private supabase: SupabaseClient;
 
-  constructor(private readonly configService: ConfigService) {
+  public constructor(private readonly configService: ConfigService) {}
+
+  public onModuleInit() {
+    this.logger.log('Initializing Supabase client...');
     const supabaseUrl = this.configService.get<string>('SUPABASE_URL');
     const supabaseKey = this.configService.get<string>(
       'SUPABASE_SERVICE_ROLE_KEY',
     );
 
-    this.supabase = createClient(supabaseUrl!, supabaseKey!);
+    if (!supabaseUrl || !supabaseKey) {
+      this.logger.error(
+        'Supabase URL or Key is not defined in environment variables.',
+      );
+      throw new Error('Supabase configuration is missing.');
+    }
+
+    this.supabase = createClient(supabaseUrl, supabaseKey);
+    this.logger.log('Supabase client initialized successfully.');
   }
 
-  getSupabaseClient() {
+  public getSupabaseClient(): SupabaseClient {
+    if (!this.supabase) {
+      this.logger.error('Supabase client has not been initialized.');
+      throw new InternalServerErrorException(
+        'Supabase client is not available.',
+      );
+    }
     return this.supabase;
   }
 
-  async uploadFile(file: Express.Multer.File, bucket: string) {
-    const fileName = `${Date.now()}-${file.originalname}`;
+  public async uploadFile(
+    file: Express.Multer.File,
+    bucket: string,
+  ): Promise<{ path: string }> {
+    const fileName = `${Date.now()}-${file.originalname.replace(/\s/g, '_')}`;
+    this.logger.log(`Uploading file "${fileName}" to bucket "${bucket}".`);
 
-    const { data, error } = await this.supabase.storage
-      .from(bucket)
-      .upload(fileName, file.buffer, {
-        contentType: file.mimetype,
-      });
+    try {
+      const { data, error } = await this.supabase.storage
+        .from(bucket)
+        .upload(fileName, file.buffer, {
+          contentType: file.mimetype,
+        });
 
-    if (error) {
-      throw new Error(`Erro no upload para o Supabase: ${error.message}`);
+      if (error) {
+        throw error;
+      }
+
+      this.logger.log(`File "${fileName}" uploaded successfully.`);
+      return data;
+    } catch (error) {
+      this.logger.error(
+        `Failed to upload file to Supabase bucket "${bucket}". Error: ${error.message}`,
+        error.stack,
+      );
+      throw new InternalServerErrorException('Failed to upload file.');
     }
-
-    return data;
   }
 }

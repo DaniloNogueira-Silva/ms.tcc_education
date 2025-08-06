@@ -1,14 +1,16 @@
 import { ExerciseList, ExerciseListSchema } from './exercise_list.schema';
+import { Module, forwardRef } from '@nestjs/common';
 
+import { ConfigService } from '@nestjs/config';
+import { ExerciseListAttemptModule } from '../exercise_list_attempt/exercise_list_attempt.module';
 import { ExerciseListController } from './exercise_list.controller';
 import { ExerciseListService } from './exercise_list.service';
-import { forwardRef, Module } from '@nestjs/common';
+import { ExerciseModule } from 'src/exercise/exercise.module';
+import { HttpRequest } from 'src/utils/http.request';
+import { LessonPlanContentModule } from 'src/lesson_plan_content/lesson_plan_content.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserProgressModule } from '../user_progress/user_progress.module';
 import { UserValidator } from '../utils/user.validator';
-import { LessonPlanContentModule } from 'src/lesson_plan_content/lesson_plan_content.module';
-import { ExerciseModule } from 'src/exercise/exercise.module';
-import { ExerciseListAttemptModule } from '../exercise_list_attempt/exercise_list_attempt.module';
 
 @Module({
   imports: [
@@ -21,7 +23,7 @@ import { ExerciseListAttemptModule } from '../exercise_list_attempt/exercise_lis
     ExerciseListAttemptModule,
   ],
   controllers: [ExerciseListController],
-  providers: [ExerciseListService, UserValidator],
+  providers: [ExerciseListService, UserValidator, ConfigService, HttpRequest],
   exports: [ExerciseListService],
 })
 export class ExerciseListModule {}

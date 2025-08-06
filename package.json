@@ -1,8 +1,8 @@
 {
-  "name": "Tcc Backend",
+  "name": "ms.tcc_education",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "Backend responsável pela gestão de planos de aula, atividades, alunos e professores",
+  "author": "Danilo e Igor",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
