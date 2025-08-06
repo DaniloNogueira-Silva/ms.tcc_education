@@ -9,7 +9,6 @@ import {
   UseGuards,
   Req,
   UseInterceptors,
-  UploadedFile,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -17,7 +16,6 @@ import { LessonService } from './lesson.service';
 import { UserValidator } from '../utils/user.validator';
 import { CreateLessonDto } from './dto/create-lesson.dto';
 import { UpdateLessonDto } from './dto/update-lesson.dto';
-import { UserPayload } from '../auth/auth.service';
 
 @Controller('lessons')
 export class LessonController {
@@ -27,12 +25,6 @@ export class LessonController {
   ) {}
 
   @UseGuards(JwtAuthGuard)
-  @Post()
-  @UseInterceptors(
-    FileInterceptor('file', {
-      dest: './uploads',
-    }),
-  )
   async create(
     @Body() createLessonDto: CreateLessonDto,
     @Req() req,
