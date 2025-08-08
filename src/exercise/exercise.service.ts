@@ -11,7 +11,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
 import { Exercise } from './exercise.schema';
-import { calculateExerciseXp } from '../user_progress/xp.util';
+import { calculateExerciseCoins, calculateExerciseXp } from '../user_progress/xp.util';
 import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { UpdateExerciseDto } from './dto/update-exercise.dto';
 import { UserPayload } from '../auth/auth.service';
@@ -284,6 +284,7 @@ export class ExerciseService {
         external_id: exercise_id,
         type: 'EXERCISE',
         points: calculateExerciseXp(exercise.difficulty),
+        coins: calculateExerciseCoins(exercise.difficulty),
       };
 
       userProgress = await this.userProgressService.create(createUserProgress);

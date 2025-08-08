@@ -280,6 +280,7 @@ export class LessonService {
         external_id: lesson_id,
         type: 'LESSON',
         points: calculateLessonXp(lesson.type),
+        coins: 20,
       };
 
       userProgress = await this.userProgressService.create(

@@ -25,6 +25,7 @@ export class LessonController {
   ) {}
 
   @UseGuards(JwtAuthGuard)
+  @Post()
   async create(
     @Body() createLessonDto: CreateLessonDto,
     @Req() req,

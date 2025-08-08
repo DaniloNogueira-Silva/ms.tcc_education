@@ -26,4 +26,8 @@ export class CreateUserProgressDto {
   @IsNumber()
   @IsOptional()
   final_grade?: number;
+
+  @IsNumber()
+  @IsOptional()
+  coins?: number;
 }

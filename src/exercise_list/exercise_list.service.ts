@@ -17,7 +17,12 @@ import { LessonPlanContentService } from '../lesson_plan_content/lesson_plan_con
 import { ExerciseService } from '../exercise/exercise.service';
 import { ExerciseListAttemptService } from '../exercise_list_attempt/exercise_list_attempt.service';
 import { ExerciseListAttempt } from '../exercise_list_attempt/exercise_list_attempt.schema';
-import { calculateExerciseListXp } from '../user_progress/xp.util';
+import {
+  calculateExerciseCoins,
+  calculateExerciseListCoins,
+  calculateExerciseListXp,
+  calculateExerciseXp,
+} from '../user_progress/xp.util';
 import { HttpRequest } from '../utils/http.request';
 
 @Injectable()
@@ -387,8 +392,8 @@ export class ExerciseListService {
       );
       const difficulties = exercises.map((e) => e.difficulty);
       const xp = calculateExerciseListXp(difficulties);
-
-      await this.userProgressService.update(userProgress.id, { points: xp });
+      const coins = calculateExerciseListCoins(difficulties);
+      await this.userProgressService.update(userProgress.id, { points: xp, coins: coins });
       return userProgress;
     } catch (error) {
       if (error instanceof NotFoundException) throw error;
