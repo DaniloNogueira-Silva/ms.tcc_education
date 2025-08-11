@@ -279,6 +279,32 @@ export class UserProgressService {
     }
   }
 
+  public async findOneByLessonAndUser(
+    lessonId: string,
+    userId: string,
+    type: string,
+  ): Promise<UserProgress | null> {
+    this.logger.log(
+      `Finding progress by lesson ${lessonId} and user ${userId}`,
+    );
+    try {
+      return await this.userProgressModel
+        .findOne({ external_id: lessonId, user_id: userId, type })
+        .exec();
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      this.logger.error(
+        `Failed to find progress for lesson ${lessonId} and user ${userId}`,
+        error.stack,
+      );
+      throw new InternalServerErrorException(
+        'A failure occurred while retrieving data.',
+      );
+    }
+  }
+
   public async hasCompletedExercise(
     external_id: string,
     user_id: string,

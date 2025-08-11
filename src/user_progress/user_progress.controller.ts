@@ -95,6 +95,20 @@ export class UserProgressController {
     return await this.userProgressService.findOne(id);
   }
 
+  @Get('lesson/:lesson_id/user/:user_id')
+  async findOneByLessonAndUser(
+    @Param('lesson_id') lesson_id: string,
+    @Param('user_id') user_id: string,
+    @Req() req,
+  ) {
+    await this.userValidator.validateAccess(req.user);
+    return await this.userProgressService.findOneByLessonAndUser(
+      lesson_id,
+      user_id,
+      'LESSON',
+    );
+  }
+
   @Patch(':id')
   async update(
     @Param('id') id: string,

@@ -9,12 +9,14 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserProgressModule } from '../user_progress/user_progress.module';
 import { UserValidator } from '../utils/user.validator';
+import { SupabaseModule } from '../supabase/supabase.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Lesson.name, schema: LessonSchema }]),
     UserProgressModule,
     LessonPlanContentModule,
+    SupabaseModule,
   ],
   controllers: [LessonController],
   providers: [LessonService, UserValidator, HttpRequest, ConfigService],

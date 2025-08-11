@@ -1,4 +1,6 @@
 import {
+  ConflictException,
+  HttpException,
   Injectable,
   InternalServerErrorException,
   Logger,
@@ -16,6 +18,7 @@ import { calculateLessonXp } from '../user_progress/xp.util';
 import { LessonPlanContentService } from '../lesson_plan_content/lesson_plan_content.service';
 import { UserProgress } from '../user_progress/user_progress.schema';
 import { HttpRequest } from '../utils/http.request';
+import { SupabaseService } from '../supabase/supabase.service';
 
 @Injectable()
 export class LessonService {
@@ -26,6 +29,7 @@ export class LessonService {
     private lessonModel: Model<Lesson>,
     private readonly lessonPlanContentService: LessonPlanContentService,
     private readonly userProgressService: UserProgressService,
+    private readonly supabaseService: SupabaseService,
     private readonly httpService: HttpRequest,
   ) {}
 
@@ -274,6 +278,19 @@ export class LessonService {
         );
       }
 
+      const alreadyCompleted =
+        await this.userProgressService.findOneByLessonAndUser(
+          lesson_id,
+          userPayload.id,
+          'LESSON',
+        );
+
+      if (alreadyCompleted) {
+        throw new ConflictException(
+          'This lesson has already been completed by this user.',
+        );
+      }
+
       const createUserProgressDto: CreateUserProgressDto = {
         user_id: userPayload.id,
         lesson_plan_id: contentAssignment.lesson_plan_id,
@@ -297,7 +314,7 @@ export class LessonService {
         );
         await this.userProgressService.remove(String(userProgress._id));
       }
-      if (error instanceof NotFoundException) {
+      if (error instanceof HttpException) {
         throw error;
       }
       this.logger.error(
@@ -308,5 +325,86 @@ export class LessonService {
         'A failure occurred while marking the lesson as completed.',
       );
     }
+  }
+
+  public async submitWork(
+    userPayload: UserPayload,
+    lesson_id: string,
+    file: Express.Multer.File,
+  ): Promise<any> {
+    this.logger.log(
+      `User ${userPayload.id} is submitting work for lesson ${lesson_id}.`,
+    );
+    let userProgress: UserProgress | null = null;
+    try {
+      const lesson = await this.lessonModel.findById(lesson_id);
+      if (!lesson) {
+        throw new NotFoundException('Lesson not found.');
+      }
+
+      const contentAssignment =
+        await this.lessonPlanContentService.findOneByContent(
+          lesson.id,
+          'lesson',
+        );
+      if (!contentAssignment) {
+        throw new NotFoundException(
+          'Lesson is not associated with any lesson plan.',
+        );
+      }
+
+      const bucketName = 'uploads';
+      const { path } = await this.supabaseService.uploadFile(file, bucketName);
+
+      const createUserProgressDto: CreateUserProgressDto = {
+        user_id: userPayload.id,
+        lesson_plan_id: contentAssignment.lesson_plan_id,
+        external_id: lesson_id,
+        type: 'SCHOOL_WORK',
+        file_path: path,
+      };
+
+      userProgress = await this.userProgressService.create(
+        createUserProgressDto,
+      );
+
+      await this.httpService.completeActivity(userProgress);
+
+      return userProgress;
+    } catch (error) {
+      if (userProgress) {
+        this.logger.error(
+          `External service call failed after creating progress ${userProgress._id}. Rolling back progress creation.`,
+        );
+        await this.userProgressService.remove(String(userProgress._id));
+      }
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      this.logger.error(
+        `Failed to submit work for lesson ${lesson_id} and user ${userPayload.id}.`,
+        error.stack,
+      );
+      throw new InternalServerErrorException(
+        'A failure occurred while submitting the work.',
+      );
+    }
+  }
+
+  public async getSubmittedWork(lessonId: string, studentId: string) {
+    const progress = await this.userProgressService.findOneByLessonAndUser(
+      lessonId,
+      studentId,
+      'SCHOOL_WORK',
+    );
+    console.log(progress);
+    if (!progress?.file_path)
+      throw new NotFoundException('Nenhum trabalho enviado.');
+
+    const url = await this.supabaseService.createSignedUrl(
+      progress.file_path,
+      'uploads',
+    );
+    return { url };
   }
 }

@@ -19,6 +19,10 @@ export class CreateUserProgressDto {
   @IsOptional()
   type?: string;
 
+  @IsString()
+  @IsOptional()
+  file_path?: string;
+
   @IsNumber()
   @IsOptional()
   points?: number;

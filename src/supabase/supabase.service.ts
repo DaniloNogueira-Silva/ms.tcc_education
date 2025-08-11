@@ -71,4 +71,12 @@ export class SupabaseService implements OnModuleInit {
       throw new InternalServerErrorException('Failed to upload file.');
     }
   }
+
+  public async createSignedUrl(path: string, bucket: string, expires = 3600) {
+    const { data, error } = await this.supabase.storage
+      .from(bucket)
+      .createSignedUrl(path, expires);
+    if (error) throw error;
+    return data.signedUrl;
+  }
 }

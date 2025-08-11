@@ -20,6 +20,9 @@ export class UserProgress extends Document {
   type: string;
 
   @Prop({ required: false })
+  file_path: string;
+
+  @Prop({ required: false })
   points: number;
 
   @Prop({ required: false })

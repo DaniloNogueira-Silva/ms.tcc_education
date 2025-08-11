@@ -9,6 +9,7 @@ import {
   UseGuards,
   Req,
   UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -26,10 +27,7 @@ export class LessonController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  async create(
-    @Body() createLessonDto: CreateLessonDto,
-    @Req() req,
-  ) {
+  async create(@Body() createLessonDto: CreateLessonDto, @Req() req) {
     await this.userValidator.validateAccess(req.user);
 
     return await this.lessonService.create(createLessonDto);
@@ -84,5 +82,25 @@ export class LessonController {
   @Post(':lessonId/mark-completed')
   async markLessonAsCompleted(@Param('lessonId') lessonId: string, @Req() req) {
     return this.lessonService.markLessonAsCompleted(req.user, lessonId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':lessonId/submit-work')
+  @UseInterceptors(FileInterceptor('file'))
+  async submitWork(
+    @Param('lessonId') lessonId: string,
+    @Req() req,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.lessonService.submitWork(req.user, lessonId, file);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':lessonId/submissions/:studentId/file')
+  async getSubmittedWork(
+    @Param('lessonId') lessonId: string,
+    @Param('studentId') studentId: string,
+  ) {
+    return this.lessonService.getSubmittedWork(lessonId, studentId);
   }
 }
