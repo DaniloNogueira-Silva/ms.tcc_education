@@ -397,7 +397,6 @@ export class LessonService {
       studentId,
       'SCHOOL_WORK',
     );
-    console.log(progress);
     if (!progress?.file_path)
       throw new NotFoundException('Nenhum trabalho enviado.');
 

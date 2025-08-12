@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Req,
+  Query,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UserProgressService } from './user_progress.service';
@@ -78,6 +79,15 @@ export class UserProgressController {
     );
   }
 
+  @Get('lesson/:lesson_id')
+  async findAllStudentsByLessonId(
+    @Param('lesson_id') lesson_id: string,
+    @Req() req,
+  ) {
+    await this.userValidator.validateAccess(req.user);
+    return await this.userProgressService.findAllStudentsByLessonId(lesson_id);
+  }
+
   @Get('lesson_plan/:lesson_plan_id')
   async findAllStudentsByLessonPlanId(
     @Param('lesson_plan_id') lesson_plan_id: string,
@@ -99,13 +109,14 @@ export class UserProgressController {
   async findOneByLessonAndUser(
     @Param('lesson_id') lesson_id: string,
     @Param('user_id') user_id: string,
+    @Query('type') type: string,
     @Req() req,
   ) {
     await this.userValidator.validateAccess(req.user);
     return await this.userProgressService.findOneByLessonAndUser(
       lesson_id,
       user_id,
-      'LESSON',
+      type,
     );
   }
 

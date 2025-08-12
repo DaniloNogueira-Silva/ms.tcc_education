@@ -98,6 +98,25 @@ export class UserProgressService {
     }
   }
 
+  public async findAllStudentsByLessonId(lesson_id: string): Promise<User[]> {
+    this.logger.log(`Finding all students by exercise list ID: ${lesson_id}`);
+    try {
+      const userIds = await this.userProgressModel.distinct('user_id', {
+        external_id: lesson_id,
+        type: 'SCHOOL_WORK',
+      });
+      return this.userModel.find({ _id: { $in: userIds } }, { name: 1 }).exec();
+    } catch (error) {
+      this.logger.error(
+        `Failed to find students by exercise list ID: ${lesson_id}`,
+        error.stack,
+      );
+      throw new InternalServerErrorException(
+        'A failure occurred while retrieving data.',
+      );
+    }
+  }
+
   public async findStudentsAnswersByExerciseListId(
     exercise_list_id: string,
   ): Promise<UserProgress[]> {
