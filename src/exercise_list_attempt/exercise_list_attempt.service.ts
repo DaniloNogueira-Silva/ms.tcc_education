@@ -107,9 +107,7 @@ export class ExerciseListAttemptService {
       const attempts = await this.findByUserProgress(attempt.user_progress_id);
       const gradedAttempts = attempts.filter((a) => a.grade);
       const grades = gradedAttempts.map((a) => a.grade ?? 0);
-      const final_grade = grades.length
-        ? grades.reduce((a, b) => a + b, 0) / grades.length
-        : 0;
+      const final_grade = grades.length ? grades.reduce((a, b) => a + b, 0) : 0;
 
       await this.userProgressService.update(attempt.user_progress_id, {
         final_grade,

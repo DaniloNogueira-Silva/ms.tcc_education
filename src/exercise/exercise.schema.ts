@@ -41,9 +41,6 @@ export class Exercise extends Document {
   @Prop({ required: false })
   teacher_id: string;
 
-  @Prop({ required: false })
-  due_date: Date;
-
   @Prop({ required: true, enum: ExerciseDifficulty })
   difficulty: ExerciseDifficulty;
 

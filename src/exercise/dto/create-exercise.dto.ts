@@ -1,7 +1,6 @@
 import {
   IsArray,
   IsBoolean,
-  IsDate,
   IsEnum,
   IsNumber,
   IsOptional,
@@ -28,12 +27,8 @@ export class CreateExerciseDto {
   @IsString()
   teacher_id: string;
 
-  @IsDate()
-  @IsOptional()
-  due_date?: Date;
-
   @IsEnum(ExerciseDifficulty)
-  dificulty?: ExerciseDifficulty;
+  difficulty?: ExerciseDifficulty;
 
   @IsNumber()
   @IsOptional()

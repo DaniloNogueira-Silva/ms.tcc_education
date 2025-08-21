@@ -1,11 +1,4 @@
-import {
-  IsArray,
-  IsDate,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateExerciseListDto {
   @IsNotEmpty()
@@ -28,10 +21,6 @@ export class CreateExerciseListDto {
   @IsNotEmpty()
   @IsString()
   content?: string;
-
-  @IsDate()
-  @IsOptional()
-  due_date?: Date;
 
   @IsNotEmpty()
   @IsString()

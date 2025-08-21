@@ -16,9 +16,6 @@ export class ExerciseList extends Document {
   @Prop({ required: false })
   content: string;
 
-  @Prop({ required: false })
-  due_date: Date;
-
   @Prop({ required: true })
   type: string;
 }

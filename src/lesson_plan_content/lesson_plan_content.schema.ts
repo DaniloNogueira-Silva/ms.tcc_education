@@ -11,6 +11,9 @@ export class LessonPlanContent extends Document {
 
   @Prop({ required: true })
   lesson_plan_id: string;
+
+  @Prop({ required: false })
+  due_date?: Date;
 }
 
 export const LessonPlanContentSchema =

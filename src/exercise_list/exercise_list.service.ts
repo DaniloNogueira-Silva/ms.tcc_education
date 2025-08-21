@@ -184,12 +184,8 @@ export class ExerciseListService {
           exercise_list_id,
           'exercise_list',
         );
-      const currentPlanIds = currentAssociations.map((a) => a.lesson_plan_id);
       const toRemove = currentAssociations.filter(
         (a) => !lesson_plan_ids.includes(a.lesson_plan_id),
-      );
-      const toAdd = lesson_plan_ids.filter(
-        (id) => !currentPlanIds.includes(id),
       );
 
       await Promise.all(
@@ -197,15 +193,7 @@ export class ExerciseListService {
           this.lessonPlanContentService.remove(String(assoc._id)),
         ),
       );
-      await Promise.all(
-        toAdd.map((id) =>
-          this.lessonPlanContentService.create({
-            lesson_plan_id: id,
-            content_id: exercise_list_id,
-            content_type: 'exercise_list',
-          }),
-        ),
-      );
+
       return updatedExerciseList;
     } catch (error) {
       this.logger.error(
@@ -221,6 +209,11 @@ export class ExerciseListService {
   public async remove(id: string): Promise<void> {
     this.logger.log(`Removing exercise list with ID: ${id}`);
     try {
+      console.log(id);
+      await this.lessonPlanContentService.removeAllAssociationsByContentId(
+        id,
+        'exercise_list',
+      );
       const result = await this.exerciselistModel.findByIdAndDelete(id);
       if (!result) {
         throw new NotFoundException(
@@ -393,7 +386,10 @@ export class ExerciseListService {
       const difficulties = exercises.map((e) => e.difficulty);
       const xp = calculateExerciseListXp(difficulties);
       const coins = calculateExerciseListCoins(difficulties);
-      await this.userProgressService.update(userProgress.id, { points: xp, coins: coins });
+      await this.userProgressService.update(userProgress.id, {
+        points: xp,
+        coins: coins,
+      });
       return userProgress;
     } catch (error) {
       if (error instanceof NotFoundException) throw error;
@@ -435,15 +431,11 @@ export class ExerciseListService {
       `Checking if deadline has passed for exercise list ${exercise_list_id}.`,
     );
     try {
-      const exercise_list = await this.exerciselistModel
-        .findById(exercise_list_id, { due_date: 1 })
-        .exec();
-      if (!exercise_list)
-        throw new NotFoundException('Exercise list not found.');
-      if (!exercise_list.due_date) return false;
-      return new Date(exercise_list.due_date).getTime() < Date.now();
+      return await this.lessonPlanContentService.isDeadlinePassed(
+        exercise_list_id,
+        'exercise_list',
+      );
     } catch (error) {
-      if (error instanceof NotFoundException) throw error;
       this.logger.error(
         `Failed to check deadline for exercise list ${exercise_list_id}.`,
         error.stack,

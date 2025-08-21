@@ -22,9 +22,6 @@ export class Lesson extends Document {
   content: string;
 
   @Prop({ required: false })
-  due_date: Date;
-
-  @Prop({ required: false })
   file: string[];
 
   @Prop({ required: false })

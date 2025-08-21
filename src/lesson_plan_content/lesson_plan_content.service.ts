@@ -185,6 +185,30 @@ export class LessonPlanContentService {
     }
   }
 
+  public async isDeadlinePassed(
+    content_id: string,
+    content_type: string,
+  ): Promise<boolean> {
+    this.logger.log(
+      `Checking if deadline has passed for content ${content_id} of type ${content_type}.`,
+    );
+    try {
+      const association = await this.lessonPlanContentModel
+        .findOne({ content_id, content_type }, { due_date: 1 })
+        .exec();
+      if (!association || !association.due_date) return false;
+      return new Date(association.due_date).getTime() < Date.now();
+    } catch (error) {
+      this.logger.error(
+        `Failed to check deadline for content ${content_id}.`,
+        error.stack,
+      );
+      throw new InternalServerErrorException(
+        'A failure occurred while checking the deadline.',
+      );
+    }
+  }
+
   public async update(
     id: string,
     updateLessonPlanContentDto: UpdateLessonPlanContentDto,
@@ -244,6 +268,7 @@ export class LessonPlanContentService {
       `Removing all associations for content ID: ${content_id} and type: ${content_type}`,
     );
     try {
+      console.log(content_id, content_type);
       await this.lessonPlanContentModel.deleteMany({
         content_id,
         content_type,

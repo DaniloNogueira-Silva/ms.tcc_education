@@ -11,7 +11,10 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
 import { Exercise } from './exercise.schema';
-import { calculateExerciseCoins, calculateExerciseXp } from '../user_progress/xp.util';
+import {
+  calculateExerciseCoins,
+  calculateExerciseXp,
+} from '../user_progress/xp.util';
 import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { UpdateExerciseDto } from './dto/update-exercise.dto';
 import { UserPayload } from '../auth/auth.service';
@@ -175,12 +178,8 @@ export class ExerciseService {
           exerciseId,
           'exercise',
         );
-      const currentPlanIds = currentAssociations.map((a) => a.lesson_plan_id);
       const toRemove = currentAssociations.filter(
         (a) => !lesson_plan_ids.includes(a.lesson_plan_id),
-      );
-      const toAdd = lesson_plan_ids.filter(
-        (id) => !currentPlanIds.includes(id),
       );
 
       await Promise.all(
@@ -188,15 +187,7 @@ export class ExerciseService {
           this.lessonPlanContentService.remove(String(assoc._id)),
         ),
       );
-      await Promise.all(
-        toAdd.map((id) =>
-          this.lessonPlanContentService.create({
-            lesson_plan_id: id,
-            content_id: exerciseId,
-            content_type: 'exercise',
-          }),
-        ),
-      );
+
       return updatedExercise;
     } catch (error) {
       if (
@@ -217,7 +208,6 @@ export class ExerciseService {
   public async remove(id: string): Promise<void> {
     this.logger.log(`Removing exercise with ID: ${id}`);
     try {
-      const exercise = await this.findOne(id);
       await this.lessonPlanContentService.removeAllAssociationsByContentId(
         id,
         'exercise',
@@ -385,14 +375,11 @@ export class ExerciseService {
       `Checking if deadline has passed for exercise ${exercise_id}.`,
     );
     try {
-      const exercise = await this.exerciseModel
-        .findById(exercise_id, { due_date: 1 })
-        .exec();
-      if (!exercise) throw new NotFoundException('Exercise not found.');
-      if (!exercise.due_date) return false;
-      return new Date(exercise.due_date).getTime() < Date.now();
+      return await this.lessonPlanContentService.isDeadlinePassed(
+        exercise_id,
+        'exercise',
+      );
     } catch (error) {
-      if (error instanceof NotFoundException) throw error;
       this.logger.error(
         `Failed to check deadline for exercise ${exercise_id}.`,
         error.stack,

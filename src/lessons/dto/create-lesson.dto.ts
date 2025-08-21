@@ -1,10 +1,4 @@
-import {
-  IsArray,
-  IsDate,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateLessonDto {
   @IsNotEmpty()
@@ -18,10 +12,6 @@ export class CreateLessonDto {
   @IsNotEmpty()
   @IsString()
   content: string;
-
-  @IsDate()
-  @IsOptional()
-  due_date: Date;
 
   @IsArray()
   @IsString({ each: true })

@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty } from 'class-validator';
+import { IsString, IsNotEmpty, IsDate, IsOptional } from 'class-validator';
 
 export class CreateLessonPlanContentDto {
   @IsString()
@@ -12,4 +12,8 @@ export class CreateLessonPlanContentDto {
   @IsString()
   @IsNotEmpty()
   content_type: string;
+
+  @IsDate()
+  @IsOptional()
+  due_date?: Date;
 }
