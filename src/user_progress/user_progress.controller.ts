@@ -46,46 +46,56 @@ export class UserProgressController {
     return await this.userProgressService.findTotalPointsByUser(lessonPlanId);
   }
 
-  @Get('exercise/:exerciseId')
+  @Get('exercise/:exerciseId/lesson-plan/:lessonPlanId')
   async findAllStudentsByExerciseId(
+    @Param('lessonPlanId') lessonPlanId: string,
     @Param('exerciseId') exerciseId: string,
     @Req() req,
   ) {
     await this.userValidator.validateAccess(req.user);
     return await this.userProgressService.findAllStudentsByExerciseId(
       exerciseId,
+      lessonPlanId,
     );
   }
 
-  @Get('exercise_list/:exercise_list_id')
+  @Get('exercise_list/:exercise_list_id/lesson-plan/:lessonPlanId')
   async findAllStudentsByExerciseListId(
     @Param('exercise_list_id') exercise_list_id: string,
+    @Param('lessonPlanId') lessonPlanId: string,
     @Req() req,
   ) {
     await this.userValidator.validateAccess(req.user);
     return await this.userProgressService.findAllStudentsByExerciseListId(
       exercise_list_id,
+      lessonPlanId,
     );
   }
 
-  @Get('exercise_list_answers/:exercise_list_id')
+  @Get('exercise_list_answers/:exercise_list_id/lesson-plan/:lessonPlanId')
   async findStudentsAnswersByExerciseListId(
     @Param('exercise_list_id') exercise_list_id: string,
+    @Param('lessonPlanId') lessonPlanId: string,
     @Req() req,
   ) {
     await this.userValidator.validateAccess(req.user);
     return await this.userProgressService.findStudentsAnswersByExerciseListId(
       exercise_list_id,
+      lessonPlanId,
     );
   }
 
-  @Get('lesson/:lesson_id')
+  @Get('lesson/:lesson_id/lesson-plan/:lessonPlanId')
   async findAllStudentsByLessonId(
     @Param('lesson_id') lesson_id: string,
+    @Param('lessonPlanId') lessonPlanId: string,
     @Req() req,
   ) {
     await this.userValidator.validateAccess(req.user);
-    return await this.userProgressService.findAllStudentsByLessonId(lesson_id);
+    return await this.userProgressService.findAllStudentsByLessonId(
+      lesson_id,
+      lessonPlanId,
+    );
   }
 
   @Get('lesson_plan/:lesson_plan_id')

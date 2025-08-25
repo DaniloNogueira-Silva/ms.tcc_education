@@ -57,11 +57,12 @@ export class UserProgressService {
 
   public async findAllStudentsByExerciseId(
     exerciseId: string,
+    lessonPlanId: string,
   ): Promise<UserProgress[]> {
     this.logger.log(`Finding all students by exercise ID: ${exerciseId}`);
     try {
       return this.userProgressModel
-        .find({ external_id: exerciseId })
+        .find({ external_id: exerciseId, lesson_plan_id: lessonPlanId })
         .populate('user_id', 'name')
         .exec();
     } catch (error) {
@@ -77,6 +78,7 @@ export class UserProgressService {
 
   public async findAllStudentsByExerciseListId(
     exercise_list_id: string,
+    lessonPlanId: string,
   ): Promise<User[]> {
     this.logger.log(
       `Finding all students by exercise list ID: ${exercise_list_id}`,
@@ -85,6 +87,7 @@ export class UserProgressService {
       const userIds = await this.userProgressModel.distinct('user_id', {
         external_id: exercise_list_id,
         type: 'EXERCISE_LIST',
+        lesson_plan_id: lessonPlanId,
       });
       return this.userModel.find({ _id: { $in: userIds } }, { name: 1 }).exec();
     } catch (error) {
@@ -98,12 +101,16 @@ export class UserProgressService {
     }
   }
 
-  public async findAllStudentsByLessonId(lesson_id: string): Promise<User[]> {
+  public async findAllStudentsByLessonId(
+    lesson_id: string,
+    lessonPlanId: string,
+  ): Promise<User[]> {
     this.logger.log(`Finding all students by exercise list ID: ${lesson_id}`);
     try {
       const userIds = await this.userProgressModel.distinct('user_id', {
         external_id: lesson_id,
         type: 'SCHOOL_WORK',
+        lesson_plan_id: lessonPlanId,
       });
       return this.userModel.find({ _id: { $in: userIds } }, { name: 1 }).exec();
     } catch (error) {
@@ -119,13 +126,18 @@ export class UserProgressService {
 
   public async findStudentsAnswersByExerciseListId(
     exercise_list_id: string,
+    lessonPlanId: string,
   ): Promise<UserProgress[]> {
     this.logger.log(
-      `Finding student answers by exercise list ID: ${exercise_list_id}`,
+      `Finding student answers by exercise list ID: ${exercise_list_id} in lesson plan ${lessonPlanId}`,
     );
     try {
       return this.userProgressModel
-        .find({ external_id: exercise_list_id, type: 'EXERCISE_LIST' })
+        .find({
+          external_id: exercise_list_id,
+          type: 'EXERCISE_LIST',
+          lesson_plan_id: lessonPlanId, 
+        })
         .populate('user_id', 'name')
         .exec();
     } catch (error) {
@@ -138,7 +150,6 @@ export class UserProgressService {
       );
     }
   }
-
   public async findAllStudentsByLessonPlanId(
     lesson_plan_id: string,
   ): Promise<User[]> {
