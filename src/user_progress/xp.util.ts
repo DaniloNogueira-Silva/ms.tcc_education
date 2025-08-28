@@ -33,9 +33,9 @@ export function calculateExerciseListXp(difficulties: string[]): number {
 }
 
 export function calculateExerciseListCoins(difficulties: string[]): number {
-  const exercisesXp = difficulties.reduce(
-    (sum, diff) => sum + calculateExerciseXp(diff),
+  const exercisesCoins = difficulties.reduce(
+    (sum, diff) => sum + calculateExerciseCoins(diff),
     0,
   );
-  return 100 + exercisesXp;
+  return 100 + exercisesCoins;
 }

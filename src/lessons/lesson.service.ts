@@ -387,10 +387,10 @@ export class LessonService {
     if (!progress?.file_path)
       throw new NotFoundException('Nenhum trabalho enviado.');
 
-    const url = await this.supabaseService.createSignedUrl(
+    const file_path = await this.supabaseService.createSignedUrl(
       progress.file_path,
       'uploads',
     );
-    return { url };
+    return { file_path };
   }
 }

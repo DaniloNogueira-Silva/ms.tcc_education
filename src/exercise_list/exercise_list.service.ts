@@ -304,7 +304,7 @@ export class ExerciseListService {
       let userProgress: UserProgress;
       try {
         userProgress = await this.userProgressService.findOneByExerciseAndUser(
-          exerciseList.id,
+          exerciseList.id, 
           userPayload.id,
         );
       } catch (err) {
@@ -313,10 +313,19 @@ export class ExerciseListService {
           lesson_plan_id: contentAssignment.lesson_plan_id,
           external_id: exerciseList.id,
           type: 'EXERCISE_LIST',
+          points: 0,
+          coins: 0, 
         };
         userProgress =
           await this.userProgressService.create(createUserProgress);
       }
+
+
+      const xp = calculateExerciseXp(exercise.difficulty);
+
+      await this.userProgressService.update(userProgress.id, {
+        points: (userProgress.points || 0) + xp,
+      });
 
       const attempt = await this.attemptService.create({
         user_progress_id: userProgress.id,
