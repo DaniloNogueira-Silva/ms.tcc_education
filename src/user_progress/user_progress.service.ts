@@ -197,7 +197,7 @@ export class UserProgressService {
   public async update(
     id: string,
     updateUserProgressDto: UpdateUserProgressDto,
-  ): Promise<UserProgress | null> {
+  ): Promise<UserProgress> {
     this.logger.log(`Updating user progress with ID: ${id}`);
     try {
       const updatedProgress = await this.userProgressModel.findByIdAndUpdate(

@@ -12,8 +12,11 @@ import { Model } from 'mongoose';
 
 import { Exercise } from './exercise.schema';
 import {
+  calculateAutomaticGrade,
+  calculateBaseExerciseXp,
   calculateExerciseCoins,
   calculateExerciseXp,
+  calculateBaseExerciseCoins,
 } from '../user_progress/xp.util';
 import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { UpdateExerciseDto } from './dto/update-exercise.dto';
@@ -267,21 +270,34 @@ export class ExerciseService {
           'Exercise is not associated with any lesson plan.',
         );
 
+      const baseXp = calculateBaseExerciseXp(exercise.difficulty);
+      const baseCoins = calculateBaseExerciseCoins(exercise.difficulty);
+
       const createUserProgress: CreateUserProgressDto = {
         user_id: userPayload.id,
         lesson_plan_id: contentAssignment.lesson_plan_id,
         answer: createUserProgressDto.answer,
         external_id: exercise_id,
         type: 'EXERCISE',
-        points: calculateExerciseXp(exercise.difficulty),
-        coins: calculateExerciseCoins(exercise.difficulty),
+        points: baseXp,
+        coins: baseCoins,
       };
 
       userProgress = await this.userProgressService.create(createUserProgress);
 
       await this.httpService.completeActivity(userProgress);
 
-      return { ...userProgress.toObject(), points: createUserProgress.points };
+      const autoGrade = calculateAutomaticGrade(
+        exercise,
+        createUserProgressDto.answer ?? '',
+      );
+
+      return {
+        ...userProgress.toObject(),
+        final_grade: autoGrade,
+        points: baseXp, 
+        coins: baseCoins, 
+      };
     } catch (error) {
       if (userProgress) {
         this.logger.error(
@@ -319,20 +335,51 @@ export class ExerciseService {
           studentUserId,
         );
 
-      const updateUserProgressDto: UpdateUserProgressDto = {
-        final_grade: data.final_grade,
-        points: calculateExerciseXp(exercise.difficulty),
-      };
+      let finalGrade = data.final_grade;
+      if (finalGrade === undefined || finalGrade === null) {
+        finalGrade = calculateAutomaticGrade(exercise, userProgress.answer);
+      }
 
-      await this.userProgressService.update(
-        userProgress.id,
-        updateUserProgressDto,
+      const maxGrade = exercise.grade || 1;
+      const gradeRatio = maxGrade ? finalGrade / maxGrade : 0;
+
+      const totalXpWithGrade =
+        calculateExerciseXp(exercise.difficulty) * gradeRatio;
+      const totalCoinsWithGrade =
+        calculateExerciseCoins(exercise.difficulty) * gradeRatio;
+
+      const xpFinal = Math.max(
+        calculateBaseExerciseXp(exercise.difficulty),
+        totalXpWithGrade,
       );
+      const coinsFinal = Math.max(
+        calculateBaseExerciseCoins(exercise.difficulty),
+        totalCoinsWithGrade,
+      );
+
+      const xpToAdd = xpFinal - (userProgress.points || 0);
+      const coinsToAdd = coinsFinal - (userProgress.coins || 0);
+
+      const updatedProgress = await this.userProgressService.update(
+        userProgress.id,
+        {
+          final_grade: finalGrade,
+          points: (userProgress.points || 0) + xpToAdd,
+          coins: (userProgress.coins || 0) + coinsToAdd,
+        },
+      );
+
+      await this.httpService.completeActivity({
+        ...updatedProgress.toObject(),
+        points: xpToAdd,
+        coins: coinsToAdd,
+      });
 
       return {
         userProgressId: userProgress.id,
-        grade: data.final_grade,
-        points: updateUserProgressDto.points,
+        final_grade: finalGrade,
+        points: xpToAdd,
+        coins: coinsToAdd,
       };
     } catch (error) {
       if (

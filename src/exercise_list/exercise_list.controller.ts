@@ -105,8 +105,8 @@ export class ExerciseListController {
     await this.userValidator.validateAccess(req.user);
     return this.exerciseListService.submitExerciseListAnswers(
       req.user,
-      exercise_id,
       exercise_list_id,
+      exercise_id,
       createUserProgressDto,
     );
   }

@@ -26,6 +26,9 @@ export class UserProgress extends Document {
   points: number;
 
   @Prop({ required: false })
+  coins: number;
+
+  @Prop({ required: false })
   final_grade: number;
 }
 

@@ -219,13 +219,12 @@ export class UserService {
         const getUserCharacterStats = await this.httpService.getStats(
           userPayload.id,
         );
-
         return {
           user,
           lesson_plans_length: lessonplans.length,
           lessons_length: lessons.length,
           exercises_length: exercises.length,
-          ...getUserCharacterStats.data,
+          ...getUserCharacterStats,
         };
       }
     } catch (error) {

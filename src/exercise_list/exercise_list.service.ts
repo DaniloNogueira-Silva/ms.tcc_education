@@ -18,10 +18,10 @@ import { ExerciseService } from '../exercise/exercise.service';
 import { ExerciseListAttemptService } from '../exercise_list_attempt/exercise_list_attempt.service';
 import { ExerciseListAttempt } from '../exercise_list_attempt/exercise_list_attempt.schema';
 import {
-  calculateExerciseCoins,
+  calculateBaseExerciseXp,
+  calculateBaseExerciseCoins,
   calculateExerciseListCoins,
   calculateExerciseListXp,
-  calculateExerciseXp,
 } from '../user_progress/xp.util';
 import { HttpRequest } from '../utils/http.request';
 
@@ -304,7 +304,7 @@ export class ExerciseListService {
       let userProgress: UserProgress;
       try {
         userProgress = await this.userProgressService.findOneByExerciseAndUser(
-          exerciseList.id, 
+          exerciseList.id,
           userPayload.id,
         );
       } catch (err) {
@@ -314,18 +314,22 @@ export class ExerciseListService {
           external_id: exerciseList.id,
           type: 'EXERCISE_LIST',
           points: 0,
-          coins: 0, 
+          coins: 0,
         };
         userProgress =
           await this.userProgressService.create(createUserProgress);
       }
 
+      const xpBase = calculateBaseExerciseXp(exercise.difficulty);
+      const coinsBase = calculateBaseExerciseCoins(exercise.difficulty);
 
-      const xp = calculateExerciseXp(exercise.difficulty);
-
-      await this.userProgressService.update(userProgress.id, {
-        points: (userProgress.points || 0) + xp,
-      });
+      const updatedProgress = await this.userProgressService.update(
+        userProgress.id,
+        {
+          points: (userProgress.points || 0) + xpBase,
+          coins: (userProgress.coins || 0) + coinsBase,
+        },
+      );
 
       const attempt = await this.attemptService.create({
         user_progress_id: userProgress.id,
@@ -333,7 +337,11 @@ export class ExerciseListService {
         answer: createUserProgressDto.answer,
       });
 
-      await this.httpService.completeActivity(userProgress);
+      await this.httpService.completeActivity({
+        ...updatedProgress.toObject(),
+        points: xpBase,
+        coins: coinsBase,
+      });
       return attempt;
     } catch (error) {
       if (error instanceof NotFoundException) throw error;
@@ -382,6 +390,8 @@ export class ExerciseListService {
           lesson_plan_id: contentAssignment.lesson_plan_id,
           external_id: exercise_list_id,
           type: 'EXERCISE_LIST',
+          points: 0,
+          coins: 0,
         };
         userProgress =
           await this.userProgressService.create(createUserProgress);
@@ -393,13 +403,27 @@ export class ExerciseListService {
         ),
       );
       const difficulties = exercises.map((e) => e.difficulty);
-      const xp = calculateExerciseListXp(difficulties);
-      const coins = calculateExerciseListCoins(difficulties);
-      await this.userProgressService.update(userProgress.id, {
-        points: xp,
-        coins: coins,
+      const totalXp = calculateExerciseListXp(difficulties);
+      const totalCoins = calculateExerciseListCoins(difficulties);
+
+      const xpAward = totalXp - (userProgress.points || 0);
+      const coinsAward = totalCoins - (userProgress.coins || 0);
+
+      const updatedProgress = await this.userProgressService.update(
+        userProgress.id,
+        {
+          points: (userProgress.points || 0) + xpAward,
+          coins: (userProgress.coins || 0) + coinsAward,
+        },
+      );
+
+      await this.httpService.completeActivity({
+        ...updatedProgress.toObject(),
+        points: xpAward,
+        coins: coinsAward,
       });
-      return userProgress;
+
+      return updatedProgress;
     } catch (error) {
       if (error instanceof NotFoundException) throw error;
       this.logger.error(
