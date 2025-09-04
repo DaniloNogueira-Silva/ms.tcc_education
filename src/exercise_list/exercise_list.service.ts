@@ -1,4 +1,6 @@
 import {
+  forwardRef,
+  Inject,
   Injectable,
   InternalServerErrorException,
   Logger,
@@ -34,7 +36,9 @@ export class ExerciseListService {
     private exerciselistModel: Model<ExerciseList>,
     private readonly lessonPlanContentService: LessonPlanContentService,
     private readonly userProgressService: UserProgressService,
+    @Inject(forwardRef(() => ExerciseService))
     private readonly exerciseService: ExerciseService,
+    @Inject(forwardRef(() => ExerciseListAttemptService))
     private readonly attemptService: ExerciseListAttemptService,
     private readonly httpService: HttpRequest,
   ) {}
@@ -318,6 +322,8 @@ export class ExerciseListService {
         };
         userProgress =
           await this.userProgressService.create(createUserProgress);
+
+        console.log('submitExerciseListAnswers userProgress', userProgress);
       }
 
       const xpBase = calculateBaseExerciseXp(exercise.difficulty);
@@ -330,6 +336,8 @@ export class ExerciseListService {
           coins: (userProgress.coins || 0) + coinsBase,
         },
       );
+
+      console.log('submitExerciseListAnswers updatedProgress', updatedProgress);
 
       const attempt = await this.attemptService.create({
         user_progress_id: userProgress.id,
@@ -395,32 +403,27 @@ export class ExerciseListService {
         };
         userProgress =
           await this.userProgressService.create(createUserProgress);
+
+        console.log('markExerciseListAsCompleted userProgress', userProgress);
       }
 
-      const exercises = await Promise.all(
-        exerciselist.exercises_ids.map((id) =>
-          this.exerciseService.findOne(String(id)),
-        ),
-      );
-      const difficulties = exercises.map((e) => e.difficulty);
-      const totalXp = calculateExerciseListXp(difficulties);
-      const totalCoins = calculateExerciseListCoins(difficulties);
-
-      const xpAward = totalXp - (userProgress.points || 0);
-      const coinsAward = totalCoins - (userProgress.coins || 0);
+      const completionBonusXp = 20;
 
       const updatedProgress = await this.userProgressService.update(
         userProgress.id,
         {
-          points: (userProgress.points || 0) + xpAward,
-          coins: (userProgress.coins || 0) + coinsAward,
+          points: (userProgress.points || 0) + completionBonusXp,
         },
       );
 
+      console.log(
+        'markExerciseListAsCompleted updatedProgress',
+        updatedProgress,
+      );
       await this.httpService.completeActivity({
         ...updatedProgress.toObject(),
-        points: xpAward,
-        coins: coinsAward,
+        points: completionBonusXp,
+        coins: 0,
       });
 
       return updatedProgress;

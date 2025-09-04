@@ -11,6 +11,10 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UserProgressController } from './user_progress.controller';
 import { UserProgressService } from './user_progress.service';
 import { UserValidator } from '../utils/user.validator';
+import {
+  ExerciseListAttempt,
+  ExerciseListAttemptSchema,
+} from '../exercise_list_attempt/exercise_list_attempt.schema';
 
 @Module({
   imports: [
@@ -18,6 +22,7 @@ import { UserValidator } from '../utils/user.validator';
       { name: UserProgress.name, schema: UserProgressSchema },
       { name: User.name, schema: UserSchema },
       { name: ExerciseList.name, schema: ExerciseListSchema },
+      { name: ExerciseListAttempt.name, schema: ExerciseListAttemptSchema },
     ]),
   ],
   controllers: [UserProgressController],

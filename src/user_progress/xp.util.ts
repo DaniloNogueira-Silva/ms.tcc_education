@@ -71,7 +71,7 @@ export function calculateExerciseListXp(difficulties: string[]): number {
     (sum, diff) => sum + calculateExerciseXp(diff),
     0,
   );
-  return 20 + exercisesXp;
+  return 10 + exercisesXp;
 }
 
 export function calculateExerciseListCoins(difficulties: string[]): number {

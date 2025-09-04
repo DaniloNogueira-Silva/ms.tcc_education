@@ -12,6 +12,7 @@ import { UserPayload } from '../auth/auth.service';
 import { UserProgress } from '../user_progress/user_progress.schema';
 import { User } from '../user/user.schema';
 import { UserRankingInfo } from './interfaces/user-points.interface';
+import { ExerciseListAttempt } from 'src/exercise_list_attempt/exercise_list_attempt.schema';
 
 @Injectable()
 export class UserProgressService {
@@ -22,6 +23,8 @@ export class UserProgressService {
     private userProgressModel: Model<UserProgress>,
     @InjectModel(User.name)
     private userModel: Model<User>,
+    @InjectModel(ExerciseListAttempt.name)
+    private attemptModel: Model<ExerciseListAttempt>,
   ) {}
 
   public async create(
@@ -136,7 +139,7 @@ export class UserProgressService {
         .find({
           external_id: exercise_list_id,
           type: 'EXERCISE_LIST',
-          lesson_plan_id: lessonPlanId, 
+          lesson_plan_id: lessonPlanId,
         })
         .populate('user_id', 'name')
         .exec();
@@ -172,14 +175,26 @@ export class UserProgressService {
     }
   }
 
-  public async findOne(id: string): Promise<UserProgress> {
+  public async getUserProgressById(id: string): Promise<any> {
     this.logger.log(`Finding user progress with ID: ${id}`);
     try {
-      const userProgress = await this.userProgressModel.findById(id).exec();
+      const userProgress = await this.userProgressModel
+        .findById(id)
+        .populate('user_id', 'name')
+        .exec();
+
       if (!userProgress) {
         throw new NotFoundException(`User progress with ID "${id}" not found.`);
       }
-      return userProgress;
+
+      const attempts = await this.attemptModel
+        .find({ user_progress_id: id })
+        .exec();
+
+      return {
+        ...userProgress.toObject(),
+        attempts,
+      };
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;

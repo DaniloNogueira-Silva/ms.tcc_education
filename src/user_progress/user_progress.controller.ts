@@ -110,9 +110,9 @@ export class UserProgressController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string, @Req() req) {
+  async getUserProgressById(@Param('id') id: string, @Req() req) {
     await this.userValidator.validateAccess(req.user);
-    return await this.userProgressService.findOne(id);
+    return await this.userProgressService.getUserProgressById(id);
   }
 
   @Get('lesson/:lesson_id/user/:user_id')
