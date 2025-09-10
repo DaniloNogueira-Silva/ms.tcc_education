@@ -3,11 +3,11 @@ import { Exercise, ExerciseType } from 'src/exercise/exercise.schema';
 export function calculateExerciseXp(difficulty: string): number {
   switch (difficulty) {
     case 'hard':
-      return 20;
+      return 40;
     case 'medium':
-      return 15;
+      return 30;
     default:
-      return 10;
+      return 20;
   }
 }
 
@@ -18,11 +18,11 @@ export function calculateBaseExerciseXp(difficulty: string): number {
 export function calculateExerciseCoins(difficulty: string): number {
   switch (difficulty) {
     case 'hard':
-      return 200;
+      return 40;
     case 'medium':
-      return 150;
+      return 30;
     default:
-      return 100;
+      return 20;
   }
 }
 
